@@ -1,10 +1,11 @@
 package net.fullstackjones.bigbraincurrency;
 
 import net.fullstackjones.bigbraincurrency.menu.MoneyPouchScreen;
+import net.fullstackjones.bigbraincurrency.menu.ShopScreen;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
-import static net.fullstackjones.bigbraincurrency.menu.ModContainers.MoneyPouchMenu;
+import static net.fullstackjones.bigbraincurrency.menu.ModContainers.*;
 
 public class ClientInit {
 
@@ -13,6 +14,7 @@ public class ClientInit {
     }
 
     private static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
-        event.register(MoneyPouchMenu.get(), MoneyPouchScreen::new);
+        event.register(MONEYPOUCHMENU.get(), MoneyPouchScreen::new);
+        event.register(SHOPMENU.get(), ShopScreen::new);
     }
 }

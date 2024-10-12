@@ -1,8 +1,8 @@
 package net.fullstackjones.bigbraincurrency;
 
+import net.fullstackjones.bigbraincurrency.block.ModBlockEntities;
 import net.fullstackjones.bigbraincurrency.block.ModBlocks;
 import net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes;
-import net.fullstackjones.bigbraincurrency.item.ModCreativeModeTabs;
 import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.fullstackjones.bigbraincurrency.menu.ModContainers;
 import org.slf4j.Logger;
@@ -43,6 +43,7 @@ public class BigBrainCurrency
         ClientInit.init(modEventBus);
         ModAttachmentTypes.register(modEventBus);
         ModItems.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModContainers.register(modEventBus);
 

@@ -12,7 +12,11 @@ import java.util.function.Supplier;
 public class ModContainers {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, BigBrainCurrency.MODID);
 
-    public static final Supplier<MenuType<MoneyPouchContainer>> MoneyPouchMenu = MENUS.register("my_menu", () -> new MenuType(MoneyPouchContainer::new, FeatureFlags.DEFAULT_FLAGS));
+    public static final Supplier<MenuType<MoneyPouchContainer>> MONEYPOUCHMENU =
+            MENUS.register("moneypouch_menu", () -> new MenuType<>(MoneyPouchContainer::new, FeatureFlags.DEFAULT_FLAGS));
+
+    public static final Supplier<MenuType<ShopMenu>> SHOPMENU =
+            MENUS.register("shop_menu", () -> new MenuType<>(ShopMenu::new, FeatureFlags.DEFAULT_FLAGS));
 
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);

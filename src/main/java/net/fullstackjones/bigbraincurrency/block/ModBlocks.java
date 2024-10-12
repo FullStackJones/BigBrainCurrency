@@ -2,6 +2,7 @@ package net.fullstackjones.bigbraincurrency.block;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
 import net.fullstackjones.bigbraincurrency.block.custom.PiggyBankBlock;
+import net.fullstackjones.bigbraincurrency.block.custom.ShopBlock;
 import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -20,6 +21,10 @@ public class ModBlocks {
     public static final DeferredBlock<Block> PIGGYBANK_BLOCK = registerBlock(
             "brainbank",
             () -> new PiggyBankBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
+
+    public static final DeferredBlock<ShopBlock> SHOP_BLOCK = registerBlock(
+            "shop",
+            () -> new ShopBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block){
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

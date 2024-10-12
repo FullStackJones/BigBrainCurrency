@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 import static net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes.BANKDETAILS;
 import static net.fullstackjones.bigbraincurrency.item.ModItems.*;
-import static net.fullstackjones.bigbraincurrency.menu.ModContainers.MoneyPouchMenu;
+import static net.fullstackjones.bigbraincurrency.menu.ModContainers.MONEYPOUCHMENU;
 
 public class MoneyPouchContainer extends AbstractContainerMenu {
 
@@ -27,7 +27,7 @@ public class MoneyPouchContainer extends AbstractContainerMenu {
     }
 
     public MoneyPouchContainer(int id, Inventory playerInventory, PlayerBankData playerBankData) {
-        super(MoneyPouchMenu.get(), id);
+        super(MONEYPOUCHMENU.get(), id);
         this.playerInv = playerInventory;
         this.playerBankData = playerBankData;
 
