@@ -2,6 +2,7 @@ package net.fullstackjones.bigbraincurrency;
 
 import net.fullstackjones.bigbraincurrency.block.ModBlockEntities;
 import net.fullstackjones.bigbraincurrency.block.ModBlocks;
+import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntityRenderer;
 import net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes;
 import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.fullstackjones.bigbraincurrency.menu.ModContainers;
@@ -20,6 +21,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(BigBrainCurrency.MODID)
@@ -68,7 +70,9 @@ public class BigBrainCurrency
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event)
         {
-
+            event.enqueueWork(() -> {
+                BlockEntityRenderers.register(ModBlockEntities.SHOPENTITY.get(), ShopBlockEntityRenderer::new);
+            });
         }
     }
 }
