@@ -12,7 +12,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
@@ -22,11 +21,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-
-import static net.fullstackjones.bigbraincurrency.item.ModItems.*;
-import static net.fullstackjones.bigbraincurrency.menu.ModContainers.SHOPMENU;
+import java.util.logging.Logger;
 
 public class ShopBlockEntity extends BaseContainerBlockEntity {
+    private static final Logger LOGGER = Logger.getLogger(ShopBlockEntity.class.getName());
     public static final int SHOPSIZE = 36;
 
     private NonNullList<ItemStack> shopItems = NonNullList.withSize(SHOPSIZE, ItemStack.EMPTY);
@@ -83,12 +81,12 @@ public class ShopBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public @NotNull ItemStack removeItem(int slot, int amount) {
+        LOGGER.info("removeItem called with slot: " + slot + ", amount: " + amount);
         ItemStack itemStack = ContainerHelper.removeItem(shopItems, slot, amount);
-        if (!itemStack.isEmpty()) {
-            setChanged();
-            if (level != null && !level.isClientSide) {
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-            }
+        LOGGER.info("Item count after removal: " + shopItems.get(slot).getCount());
+        setChanged();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), this.getBlockState(), 3);
         }
         return itemStack;
     }
@@ -99,6 +97,7 @@ public class ShopBlockEntity extends BaseContainerBlockEntity {
         if (level != null && !level.isClientSide) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
+        resetRenderer();
     }
 
     @Override
@@ -128,6 +127,13 @@ public class ShopBlockEntity extends BaseContainerBlockEntity {
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         super.handleUpdateTag(tag, lookupProvider);
         this.loadAdditional(tag, lookupProvider);
+    }
+
+    public void resetRenderer() {
+        requestModelDataUpdate();
+        if (level != null && !level.isClientSide) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
     }
 
     @Override
