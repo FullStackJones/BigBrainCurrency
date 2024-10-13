@@ -1,13 +1,13 @@
-package net.fullstackjones.bigbraincurrency.menu;
+package net.fullstackjones.bigbraincurrency.menu.customslots;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class MoneyPouchSlot extends Slot {
+public class CurrencySlot extends Slot {
     private final ItemStack coinType;
 
-    public MoneyPouchSlot(Container container, int index, int x, int y, ItemStack coinType) {
+    public CurrencySlot(Container container, int index, int x, int y, ItemStack coinType) {
         super(container, index, x, y);
         this.coinType = coinType;
     }

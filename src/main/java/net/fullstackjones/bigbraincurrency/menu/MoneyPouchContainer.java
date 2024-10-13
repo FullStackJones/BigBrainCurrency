@@ -2,6 +2,7 @@ package net.fullstackjones.bigbraincurrency.menu;
 
 import net.fullstackjones.bigbraincurrency.data.BankDetails;
 import net.fullstackjones.bigbraincurrency.data.PlayerBankData;
+import net.fullstackjones.bigbraincurrency.menu.customslots.CurrencySlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -41,10 +42,10 @@ public class MoneyPouchContainer extends AbstractContainerMenu {
             }
         }
 
-        this.addSlot(new MoneyPouchSlot(playerBankData, 0, 8, 7, PINKCOIN.toStack()));
-        this.addSlot(new MoneyPouchSlot(playerBankData, 1, 8 + (slotSize), 7, GOLDCOIN.toStack()));
-        this.addSlot(new MoneyPouchSlot(playerBankData, 2, 8 + (2 * slotSize), 7, SILVERCOIN.toStack()));
-        this.addSlot(new MoneyPouchSlot(playerBankData, 3, 8 + (3 * slotSize), 7, COPPERCOIN.toStack()));
+        this.addSlot(new CurrencySlot(playerBankData, 0, 8, 7, PINKCOIN.toStack()));
+        this.addSlot(new CurrencySlot(playerBankData, 1, 8 + (slotSize), 7, GOLDCOIN.toStack()));
+        this.addSlot(new CurrencySlot(playerBankData, 2, 8 + (2 * slotSize), 7, SILVERCOIN.toStack()));
+        this.addSlot(new CurrencySlot(playerBankData, 3, 8 + (3 * slotSize), 7, COPPERCOIN.toStack()));
     }
 
     @Override
