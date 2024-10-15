@@ -4,14 +4,11 @@ import net.fullstackjones.bigbraincurrency.block.ModBlockEntities;
 import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -43,16 +40,20 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         super(ModBlockEntities.SHOPENTITY.get(), pos, state);
     }
 
-    public ItemStackHandler getShopItems() {
-        return shopItems;
-    }
-
     public UUID getOwnerUUID() {
         return owner;
     }
 
     public void setOwnerUUID(UUID owner) {
         this.owner = owner;
+        setChanged();
+    }
+
+    public void clearProfit(){
+        shopItems.setStackInSlot(27, ItemStack.EMPTY);
+        shopItems.setStackInSlot(28, ItemStack.EMPTY);
+        shopItems.setStackInSlot(29, ItemStack.EMPTY);
+        shopItems.setStackInSlot(30, ItemStack.EMPTY);
         setChanged();
     }
 

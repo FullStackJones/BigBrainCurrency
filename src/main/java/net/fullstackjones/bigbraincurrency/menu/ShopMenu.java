@@ -4,6 +4,7 @@ import net.fullstackjones.bigbraincurrency.block.ModBlocks;
 import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.menu.customslots.CurrencySlot;
 import net.fullstackjones.bigbraincurrency.menu.customslots.PricingSlot;
+import net.fullstackjones.bigbraincurrency.menu.customslots.ShopCurrecySlot;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -66,10 +67,10 @@ public class ShopMenu extends AbstractContainerMenu {
             }
         }
 
-        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 27, 98,  56));
-        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 28, 98 + slotSize,  56));
-        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 29, 98 + 2 * slotSize,  56));
-        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 30, 98 + 3 * slotSize,  56));
+        this.addSlot(new ShopCurrecySlot(this.blockEntity.shopItems, 27, 98,  56, PINKCOIN.toStack()));
+        this.addSlot(new ShopCurrecySlot(this.blockEntity.shopItems, 28, 98 + slotSize,  56, GOLDCOIN.toStack()));
+        this.addSlot(new ShopCurrecySlot(this.blockEntity.shopItems, 29, 98 + 2 * slotSize,  56, SILVERCOIN.toStack()));
+        this.addSlot(new ShopCurrecySlot(this.blockEntity.shopItems, 30, 98 + 3 * slotSize,  56, COPPERCOIN.toStack()));
 
         this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 31, 8,  16));
 
@@ -77,45 +78,6 @@ public class ShopMenu extends AbstractContainerMenu {
         this.addSlot(new PricingSlot(this.blockEntity.shopItems, 33, 98 + slotSize,  16, GOLDCOIN.toStack()));
         this.addSlot(new PricingSlot(this.blockEntity.shopItems, 34, 98 + 2 * slotSize,  16, SILVERCOIN.toStack()));
         this.addSlot(new PricingSlot(this.blockEntity.shopItems, 35, 98 + 3 * slotSize,  16, COPPERCOIN.toStack()));
-    }
-
-    @Override
-    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index){
-        ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(index);
-
-        if (slot.hasItem()) {
-            ItemStack stackInSlot = slot.getItem();
-            itemstack = stackInSlot.copy();
-
-            // Define slot ranges
-            int shopStockStart = 0;
-            int shopStockEnd = 27; // Shop stock slots
-            int playerInventoryStart = 0;
-            int playerInventoryEnd = playerInventoryStart + playerInventory.getContainerSize() - 1;
-
-            if (index >= shopStockStart && index <= shopStockEnd) {
-                // Move from shop stock to player inventory
-                if (!this.moveItemStackTo(stackInSlot, playerInventoryStart, playerInventoryEnd + 1, true)) {
-                    return ItemStack.EMPTY;
-                }
-            } else if (index >= playerInventoryStart && index <= playerInventoryEnd) {
-                // Move from player inventory to shop stock
-                if (!this.moveItemStackTo(stackInSlot, shopStockStart, shopStockEnd + 1, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else {
-                return ItemStack.EMPTY;
-            }
-
-            if (stackInSlot.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
-            }
-        }
-
-        return itemstack;
     }
 
     @Override
@@ -144,7 +106,7 @@ public class ShopMenu extends AbstractContainerMenu {
                 return;
             }
             stack.grow(1);
-            if(stack.getCount() <= 7) {
+            if(stack.getCount() <= 8) {
                 blockEntity.shopItems.setStackInSlot(slotIndex, stack);
             } else if (stack.getCount() < 100 && slotIndex == 32) {
                 blockEntity.shopItems.setStackInSlot(slotIndex, stack);
@@ -154,5 +116,46 @@ public class ShopMenu extends AbstractContainerMenu {
                 blockEntity.shopItems.extractItem(slotIndex, 1, false);
             }
         }
+    }
+
+
+    private static final int HOTBAR_SLOT_COUNT = 9;
+    private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
+    private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
+    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
+    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+    private static final int VANILLA_FIRST_SLOT_INDEX = 0;
+    private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+    private static final int TE_INVENTORY_SLOT_COUNT = 32;  // must be the number of slots you have!
+    @Override
+    public ItemStack quickMoveStack(Player playerIn, int pIndex) {
+        Slot sourceSlot = slots.get(pIndex);
+        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
+        ItemStack sourceStack = sourceSlot.getItem();
+        ItemStack copyOfSourceStack = sourceStack.copy();
+        // Check if the slot clicked is one of the vanilla container slots
+        if (pIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
+            // This is a vanilla container slot so merge the stack into the tile inventory
+            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
+                    + TE_INVENTORY_SLOT_COUNT, false)) {
+                return ItemStack.EMPTY;  // EMPTY_ITEM
+            }
+        } else if (pIndex < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
+            // This is a TE slot so merge the stack into the players inventory
+            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
+                return ItemStack.EMPTY;
+            }
+        } else {
+            System.out.println("Invalid slotIndex:" + pIndex);
+            return ItemStack.EMPTY;
+        }
+        // If stack size == 0 (the entire stack was moved) set slot contents to null
+        if (sourceStack.getCount() == 0) {
+            sourceSlot.set(ItemStack.EMPTY);
+        } else {
+            sourceSlot.setChanged();
+        }
+        sourceSlot.onTake(playerIn, sourceStack);
+        return copyOfSourceStack;
     }
 }

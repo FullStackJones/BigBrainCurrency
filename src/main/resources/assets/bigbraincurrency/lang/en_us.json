@@ -14,5 +14,9 @@
   "container.bigbraincurrency.shopentity.stock": "Stock",
   "container.bigbraincurrency.shopentity.Item": "Item",
   "container.bigbraincurrency.shopentity.Price": "Price",
-  "container.bigbraincurrency.shopentity.Profit": "Profit"
+  "container.bigbraincurrency.shopentity.Profit": "Profit",
+
+  "shop.bigbraincurrency.outofStock": "This shop is out of stock!",
+  "shop.bigbraincurrency.insufficientFunds": "you dont not have sufficient funds!",
+  "shop.bigbraincurrency.pouchFull": "Your money pouch is full."
 }

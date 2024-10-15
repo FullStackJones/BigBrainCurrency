@@ -25,10 +25,10 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
     public void render(ShopBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         RenderWindow(poseStack, bufferSource, packedLight, packedOverlay);
 
-        ItemStack saleItem = blockEntity.getShopItems().getStackInSlot(31);
+        ItemStack saleItem = blockEntity.shopItems.getStackInSlot(31);
         if(!saleItem.isEmpty()){
             RenderSaleItem(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
-            ItemStack itemStack = blockEntity.getShopItems().getStackInSlot(31);
+            ItemStack itemStack = blockEntity.shopItems.getStackInSlot(31);
             float playerAngle = getAngle(blockEntity);
             if (!itemStack.isEmpty()) {
                 RenderQuantityLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
@@ -39,7 +39,7 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
 
     @Override
     public int getViewDistance() {
-        return 10;
+        return 16;
     }
 
     private static void RenderQuantityLabel(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float playerAngle, ItemStack itemStack) {
@@ -113,7 +113,7 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
 
     private static void RenderSaleItem(ShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();
-        ItemStack itemStack = blockEntity.getShopItems().getStackInSlot(31);
+        ItemStack itemStack = blockEntity.shopItems.getStackInSlot(31);
         poseStack.translate(0.5, 1.35, 0.5);
         poseStack.scale(1f, 1f, 1f);
         long time = System.currentTimeMillis();
