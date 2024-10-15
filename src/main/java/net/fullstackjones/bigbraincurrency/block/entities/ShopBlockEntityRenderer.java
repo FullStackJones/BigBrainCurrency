@@ -2,6 +2,7 @@ package net.fullstackjones.bigbraincurrency.block.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -33,7 +34,7 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
             if (!itemStack.isEmpty()) {
                 RenderQuantityLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
             }
-            RenderPriceLabel(blockEntity, poseStack, bufferSource, packedLight, playerAngle);
+            RenderPriceLabel(blockEntity, poseStack, bufferSource, packedLight, packedOverlay, playerAngle);
         }
     }
 
@@ -72,43 +73,82 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
 
     }
 
-    private static void RenderPriceLabel(ShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float playerAngle) {
+    private static void RenderPriceLabel(ShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, float playerAngle) {
+        ItemStack pinkCoinStack = new ItemStack(ModItems.PINKCOIN.get());
+        ItemStack goldCoinStack = new ItemStack(ModItems.GOLDCOIN.get());
+        ItemStack silverCoinStack = new ItemStack(ModItems.SILVERCOIN.get());
+        ItemStack copperCoinStack = new ItemStack(ModItems.COPPERCOIN.get());
 
-        String copperPrice= "";
-        String silverPrice= "";
-        String goldPrice= "";
-        String pinkPrice= "";
-        if(!blockEntity.shopItems.getStackInSlot(32).isEmpty())
-            pinkPrice =  "B x" + blockEntity.shopItems.getStackInSlot(32).getCount();
-        if(!blockEntity.shopItems.getStackInSlot(33).isEmpty())
-            goldPrice = "G x" + blockEntity.shopItems.getStackInSlot(33).getCount();
-        if(!blockEntity.shopItems.getStackInSlot(34).isEmpty())
-            silverPrice = "S x" + blockEntity.shopItems.getStackInSlot(34).getCount();
-        if(!blockEntity.shopItems.getStackInSlot(35).isEmpty())
-            copperPrice = "C x" + blockEntity.shopItems.getStackInSlot(35).getCount();
-
-        StringJoiner priceJoiner = new StringJoiner(" ");
-        if (!pinkPrice.isEmpty()) priceJoiner.add(pinkPrice);
-        if (!goldPrice.isEmpty()) priceJoiner.add(goldPrice);
-        if (!silverPrice.isEmpty()) priceJoiner.add(silverPrice);
-        if (!copperPrice.isEmpty()) priceJoiner.add(copperPrice);
-
-        String priceText = priceJoiner.toString();
         poseStack.pushPose();
         poseStack.translate(0.5, 1.2, 0.5); // Adjust position as needed
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(playerAngle));
         poseStack.scale(0.01f, 0.01f, 0.01f); // Smaller text size
-        Font font = Minecraft.getInstance().font;
+        // todo: improve the offset calculations
+        float xOffset = 0;
+        int priceTypes = 0;
+        if(!blockEntity.shopItems.getStackInSlot(32).isEmpty()){
+            priceTypes += 1;
+        }
+        if(!blockEntity.shopItems.getStackInSlot(33).isEmpty()){
+            priceTypes += 1;
+        }
+        if(!blockEntity.shopItems.getStackInSlot(34).isEmpty()){
+            priceTypes += 1;
+        }
+        if(!blockEntity.shopItems.getStackInSlot(35).isEmpty()){
+            priceTypes += 1;
+        }
 
-        float textWidth = font.width(priceText) / 2.0f;
-        float textHeight = font.lineHeight / 2.0f;
+        if(priceTypes == 4){
+            xOffset -= 40;
+        }
 
-        poseStack.translate(-textWidth, -textHeight, 0);
+        if(priceTypes == 3){
+            xOffset -= 25;
+        }
 
-        Matrix4f matrix = poseStack.last().pose();
-        Minecraft.getInstance().font.drawInBatch(priceText, 0.0f, 0.0f, 0xFFFFFF, false, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, packedLight);
+        if(priceTypes == 2){
+            xOffset -= 10;
+        }
+
+        if (!blockEntity.shopItems.getStackInSlot(32).isEmpty()) {
+            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, pinkCoinStack, blockEntity.shopItems.getStackInSlot(32).getCount(), xOffset);
+            xOffset += 22; // Adjust spacing as needed
+        }
+        if (!blockEntity.shopItems.getStackInSlot(33).isEmpty()) {
+            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, goldCoinStack, blockEntity.shopItems.getStackInSlot(33).getCount(), xOffset);
+            xOffset += 22; // Adjust spacing as needed
+        }
+        if (!blockEntity.shopItems.getStackInSlot(34).isEmpty()) {
+            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, silverCoinStack, blockEntity.shopItems.getStackInSlot(34).getCount(), xOffset);
+            xOffset += 22; // Adjust spacing as needed
+        }
+        if (!blockEntity.shopItems.getStackInSlot(35).isEmpty()) {
+            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, copperCoinStack, blockEntity.shopItems.getStackInSlot(35).getCount(), xOffset);
+        }
+
         poseStack.popPose();
+    }
+
+    private static float renderCoinWithCount(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, ItemStack coinStack, int count, float xOffset) {
+        poseStack.pushPose();
+        poseStack.translate(xOffset, 0, 0);
+        poseStack.scale(15, 15f, 15f);
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
+        Minecraft.getInstance().getItemRenderer().renderStatic(coinStack, ItemDisplayContext.GUI, packedLight, packedOverlay, poseStack, bufferSource, null, 0);
+
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
+        poseStack.scale(0.03f, 0.03f, 0.03f);
+        poseStack.translate(10, -2, 0); // Adjust position for the count text
+        String countText = "x " + count;
+        Font font = Minecraft.getInstance().font;
+        Matrix4f matrix = poseStack.last().pose();
+        font.drawInBatch(countText, 0, 0, 0xFFFFFF, false, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, packedLight);
+        poseStack.popPose();
+
+        // Calculate and return the width of the coin and label
+        return 15 + font.width(countText) * 0.04f;
     }
 
     private static void RenderSaleItem(ShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
