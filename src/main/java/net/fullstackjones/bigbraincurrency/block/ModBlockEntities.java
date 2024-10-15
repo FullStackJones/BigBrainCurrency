@@ -2,10 +2,15 @@ package net.fullstackjones.bigbraincurrency.block;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
 import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
+import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;

@@ -2,22 +2,15 @@ package net.fullstackjones.bigbraincurrency.menu;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
-import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
-import net.fullstackjones.bigbraincurrency.menu.customslots.PricingSlot;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ShopScreen extends AbstractContainerScreen<ShopMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(BigBrainCurrency.MODID,"textures/gui/shop.png");
-    private final ShopBlockEntity blockEntity;
-
     private static final Component STOCK_TEXT = Component.translatable("container.bigbraincurrency.shopentity.stock");
     private static final Component ITEM_TEXT = Component.translatable("container.bigbraincurrency.shopentity.Item");
     private static final Component PRICE_TEXT = Component.translatable("container.bigbraincurrency.shopentity.Price");
@@ -25,7 +18,6 @@ public class ShopScreen extends AbstractContainerScreen<ShopMenu> {
 
     public ShopScreen(ShopMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
-        this.blockEntity = menu.getBlockEntity();
         this.imageHeight = 256;
     }
 

@@ -1,29 +1,20 @@
 package net.fullstackjones.bigbraincurrency.menu.customslots;
 
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 
-public class PricingSlot extends Slot {
+public class PricingSlot extends SlotItemHandler {
     private final ItemStack currencyType;
 
-    private static final int MAX_STACK = 128;
+    private static final int MAX_STACK = 99;
 
-    public PricingSlot(Container container, int slot, int x, int y, ItemStack currencyType) {
-        super(container, slot, x, y);
+    public PricingSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, ItemStack currencyType) {
+        super(itemHandler, index, xPosition, yPosition);
         this.currencyType = currencyType;
     }
 
-    @Override
-    public void setChanged() {
-        super.setChanged();
-    }
-
-    @Override
-    public void set(ItemStack pStack) {
-        super.set(pStack);
-    }
 
     @Override
     public boolean mayPlace(ItemStack stack) {

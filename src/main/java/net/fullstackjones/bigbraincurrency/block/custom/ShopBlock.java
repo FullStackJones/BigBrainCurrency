@@ -3,8 +3,12 @@ package net.fullstackjones.bigbraincurrency.block.custom;
 import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -46,13 +50,14 @@ public class ShopBlock extends Block implements EntityBlock {
 
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (!level.isClientSide) {
+       if(level.getBlockEntity(pos) instanceof ShopBlockEntity shop){
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ShopBlockEntity menuProvider) {
-                player.openMenu(menuProvider);
+            if (!level.isClientSide) {
+                ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
+
             }
         }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.SUCCESS;
     }
 
     @Override

@@ -14,11 +14,11 @@ public class CurrencySlot extends Slot {
 
     @Override
     public int getMaxStackSize() {
-        return 128;
+        return 99;
     }
     @Override
     public int getMaxStackSize(ItemStack stack) {
-        return 128;
+        return 99;
     }
 
     @Override

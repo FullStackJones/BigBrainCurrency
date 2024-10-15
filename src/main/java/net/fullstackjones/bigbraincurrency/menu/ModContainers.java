@@ -3,8 +3,12 @@ package net.fullstackjones.bigbraincurrency.menu;
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.neoforged.neoforge.network.IContainerFactory;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -15,8 +19,12 @@ public class ModContainers {
     public static final Supplier<MenuType<MoneyPouchContainer>> MONEYPOUCHMENU =
             MENUS.register("moneypouch_menu", () -> new MenuType<>(MoneyPouchContainer::new, FeatureFlags.DEFAULT_FLAGS));
 
-    public static final Supplier<MenuType<ShopMenu>> SHOPMENU =
-            MENUS.register("shop_menu", () -> new MenuType<>(ShopMenu::new, FeatureFlags.DEFAULT_FLAGS));
+    public static final DeferredHolder<MenuType<?>, MenuType<ShopMenu>> SHOPMENU =
+            registerMenuType("shop_menu", ShopMenu::new);
+
+    private static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {
+        return MENUS.register(name, () -> IMenuTypeExtension.create(factory));
+    }
 
     public static void register(IEventBus eventBus) {
         MENUS.register(eventBus);

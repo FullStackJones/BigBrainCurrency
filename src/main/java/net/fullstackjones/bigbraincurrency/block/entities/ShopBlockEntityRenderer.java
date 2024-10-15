@@ -12,27 +12,34 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
+
+import java.util.StringJoiner;
 
 public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEntity> {
     public ShopBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public void render(ShopBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    public void render(ShopBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         RenderWindow(poseStack, bufferSource, packedLight, packedOverlay);
-        ItemStack saleItem = blockEntity.getItems().get(31);
+
+        ItemStack saleItem = blockEntity.getShopItems().getStackInSlot(31);
         if(!saleItem.isEmpty()){
             RenderSaleItem(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
-            ItemStack itemStack = blockEntity.getItems().get(31);
+            ItemStack itemStack = blockEntity.getShopItems().getStackInSlot(31);
             float playerAngle = getAngle(blockEntity);
             if (!itemStack.isEmpty()) {
                 RenderQuantityLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
             }
             RenderPriceLabel(blockEntity, poseStack, bufferSource, packedLight, playerAngle);
         }
+    }
 
-
+    @Override
+    public int getViewDistance() {
+        return 10;
     }
 
     private static void RenderQuantityLabel(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float playerAngle, ItemStack itemStack) {
@@ -71,16 +78,22 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
         String silverPrice= "";
         String goldPrice= "";
         String pinkPrice= "";
-        if(!blockEntity.getItems().get(32).isEmpty())
-            pinkPrice =  "B x" + blockEntity.getItems().get(32).getCount();
-        if(!blockEntity.getItems().get(33).isEmpty())
-            goldPrice = "G x" + blockEntity.getItems().get(33).getCount();
-        if(!blockEntity.getItems().get(34).isEmpty())
-            silverPrice = "S x" + blockEntity.getItems().get(34).getCount();
-        if(!blockEntity.getItems().get(35).isEmpty())
-            copperPrice = "C x" + blockEntity.getItems().get(35).getCount();
+        if(!blockEntity.shopItems.getStackInSlot(32).isEmpty())
+            pinkPrice =  "B x" + blockEntity.shopItems.getStackInSlot(32).getCount();
+        if(!blockEntity.shopItems.getStackInSlot(33).isEmpty())
+            goldPrice = "G x" + blockEntity.shopItems.getStackInSlot(33).getCount();
+        if(!blockEntity.shopItems.getStackInSlot(34).isEmpty())
+            silverPrice = "S x" + blockEntity.shopItems.getStackInSlot(34).getCount();
+        if(!blockEntity.shopItems.getStackInSlot(35).isEmpty())
+            copperPrice = "C x" + blockEntity.shopItems.getStackInSlot(35).getCount();
 
-        String priceText = pinkPrice + " " + goldPrice + " " + silverPrice + " " + copperPrice;
+        StringJoiner priceJoiner = new StringJoiner(" ");
+        if (!pinkPrice.isEmpty()) priceJoiner.add(pinkPrice);
+        if (!goldPrice.isEmpty()) priceJoiner.add(goldPrice);
+        if (!silverPrice.isEmpty()) priceJoiner.add(silverPrice);
+        if (!copperPrice.isEmpty()) priceJoiner.add(copperPrice);
+
+        String priceText = priceJoiner.toString();
         poseStack.pushPose();
         poseStack.translate(0.5, 1.2, 0.5); // Adjust position as needed
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
@@ -100,7 +113,7 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
 
     private static void RenderSaleItem(ShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();
-        ItemStack itemStack = blockEntity.getItems().get(31);
+        ItemStack itemStack = blockEntity.getShopItems().getStackInSlot(31);
         poseStack.translate(0.5, 1.35, 0.5);
         poseStack.scale(1f, 1f, 1f);
         long time = System.currentTimeMillis();

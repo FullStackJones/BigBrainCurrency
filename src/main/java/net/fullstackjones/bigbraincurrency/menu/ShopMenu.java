@@ -1,22 +1,25 @@
 package net.fullstackjones.bigbraincurrency.menu;
 
+import net.fullstackjones.bigbraincurrency.block.ModBlocks;
 import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.menu.customslots.CurrencySlot;
 import net.fullstackjones.bigbraincurrency.menu.customslots.PricingSlot;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import static net.fullstackjones.bigbraincurrency.item.ModItems.*;
-import static net.fullstackjones.bigbraincurrency.menu.ModContainers.SHOPMENU;
 
 public class ShopMenu extends AbstractContainerMenu {
     protected final int inventoryColumns = 9;
@@ -27,19 +30,19 @@ public class ShopMenu extends AbstractContainerMenu {
 
     protected final int slotSize = 18;
 
-    protected final Container shopContainer;
     protected final Inventory playerInventory;
-    protected final ShopBlockEntity blockEntity;
+    public final ShopBlockEntity blockEntity;
+    private final Level level;
 
-    public ShopMenu(int i, Inventory inventory) {
-        this(i, inventory, null);
+    public ShopMenu(int containerId, Inventory inventory, RegistryFriendlyByteBuf extraData) {
+        this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
-    public ShopMenu(int i, Inventory inventory, ShopBlockEntity shop) {
-        super(SHOPMENU.get(), i);
-        this.shopContainer = (shop != null) ? shop : new SimpleContainer(36);;
-        this.blockEntity = shop;
+    public ShopMenu(int containerId, Inventory inventory, BlockEntity shop) {
+        super(ModContainers.SHOPMENU.get(), containerId);
+        this.blockEntity = ((ShopBlockEntity) shop);
         this.playerInventory = inventory;
+        this.level = inventory.player.level();
         addShopSaleSlots();
         addPlayerInventory();
     }
@@ -59,32 +62,21 @@ public class ShopMenu extends AbstractContainerMenu {
     private void addShopSaleSlots() {
         for (int k = 0; k < inventoryRows; k++) {
             for (int l = 0; l < inventoryColumns; l++) {
-                this.addSlot(new Slot(shopContainer, l + k * inventoryColumns, 8 + l * slotSize,  k * slotSize + 76));
+                this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, l + k * inventoryColumns, 8 + l * slotSize,  k * slotSize + 76));
             }
         }
 
-        this.addSlot(new CurrencySlot(shopContainer, 27, 98,  56, PINKCOIN.toStack()));
-        this.addSlot(new CurrencySlot(shopContainer, 28, 98 + slotSize,  56, GOLDCOIN.toStack()));
-        this.addSlot(new CurrencySlot(shopContainer, 29, 98 + 2 * slotSize,  56, SILVERCOIN.toStack()));
-        this.addSlot(new CurrencySlot(shopContainer, 30, 98 + 3 * slotSize,  56, COPPERCOIN.toStack()));
+        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 27, 98,  56));
+        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 28, 98 + slotSize,  56));
+        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 29, 98 + 2 * slotSize,  56));
+        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 30, 98 + 3 * slotSize,  56));
 
-        this.addSlot(new Slot(shopContainer, 31, 8,  16));
+        this.addSlot(new SlotItemHandler(this.blockEntity.shopItems, 31, 8,  16));
 
-        this.addSlot(new PricingSlot(shopContainer, 32, 98,  16, PINKCOIN.toStack()));
-        this.addSlot(new PricingSlot(shopContainer, 33, 98 + slotSize,  16, GOLDCOIN.toStack()));
-        this.addSlot(new PricingSlot(shopContainer, 34, 98 + 2 * slotSize,  16, SILVERCOIN.toStack()));
-        this.addSlot(new PricingSlot(shopContainer, 35, 98 + 3 * slotSize,  16, COPPERCOIN.toStack()));
-    }
-
-    @Override
-    public void slotsChanged(Container container) {
-        if (blockEntity != null) {
-            blockEntity.setChanged();
-            if (blockEntity.getLevel() != null && !blockEntity.getLevel().isClientSide) {
-                blockEntity.getLevel().sendBlockUpdated(blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity.getBlockState(), 3);
-            }
-        }
-        super.slotsChanged(container);
+        this.addSlot(new PricingSlot(this.blockEntity.shopItems, 32, 98,  16, PINKCOIN.toStack()));
+        this.addSlot(new PricingSlot(this.blockEntity.shopItems, 33, 98 + slotSize,  16, GOLDCOIN.toStack()));
+        this.addSlot(new PricingSlot(this.blockEntity.shopItems, 34, 98 + 2 * slotSize,  16, SILVERCOIN.toStack()));
+        this.addSlot(new PricingSlot(this.blockEntity.shopItems, 35, 98 + 3 * slotSize,  16, COPPERCOIN.toStack()));
     }
 
     @Override
@@ -92,7 +84,7 @@ public class ShopMenu extends AbstractContainerMenu {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
 
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack stackInSlot = slot.getItem();
             itemstack = stackInSlot.copy();
 
@@ -128,11 +120,7 @@ public class ShopMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return player.isAlive();
-    }
-
-    public ShopBlockEntity getBlockEntity() {
-        return blockEntity;
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, ModBlocks.SHOP_BLOCK.get());
     }
 
     @Override
@@ -145,27 +133,26 @@ public class ShopMenu extends AbstractContainerMenu {
     }
 
     public void handlePricingSlotClick(int slotIndex, int button) {
-        Slot slot = this.getSlot(slotIndex);
-        ItemStack stack = slot.getItem();
+        if(blockEntity == null) {
+            return;
+        }
+        ItemStack stack = blockEntity.shopItems.getStackInSlot(slotIndex).copy();
         if (button == 0) { // Left click
             if (stack.isEmpty()) {
-                PricingSlot pricingSlot = (PricingSlot) slot;
-                Item item = pricingSlot.getCurrencyType().getItem();
-                slot.set(item.getDefaultInstance());
-            } else {
-                if(stack.getCount() <= 99) {
-                    stack.grow(1);
-                }
+                PricingSlot pricingSlot = (PricingSlot) this.getSlot(slotIndex);
+                blockEntity.shopItems.insertItem(slotIndex, pricingSlot.getCurrencyType(), false);
+                return;
+            }
+            stack.grow(1);
+            if(stack.getCount() <= 7) {
+                blockEntity.shopItems.setStackInSlot(slotIndex, stack);
+            } else if (stack.getCount() < 100 && slotIndex == 32) {
+                blockEntity.shopItems.setStackInSlot(slotIndex, stack);
             }
         } else if (button == 1) { // Right click
             if (!stack.isEmpty()) {
-                stack.shrink(1);
-                if (stack.getCount() == 0) {
-                    slot.set(ItemStack.EMPTY);
-                    slot.setChanged();
-                }
+                blockEntity.shopItems.extractItem(slotIndex, 1, false);
             }
         }
-        this.slotsChanged(slot.container);
     }
 }
