@@ -74,58 +74,33 @@ public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEnt
     }
 
     private static void RenderPriceLabel(ShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, float playerAngle) {
-        ItemStack pinkCoinStack = new ItemStack(ModItems.PINKCOIN.get());
-        ItemStack goldCoinStack = new ItemStack(ModItems.GOLDCOIN.get());
-        ItemStack silverCoinStack = new ItemStack(ModItems.SILVERCOIN.get());
-        ItemStack copperCoinStack = new ItemStack(ModItems.COPPERCOIN.get());
-
         poseStack.pushPose();
         poseStack.translate(0.5, 1.2, 0.5); // Adjust position as needed
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(playerAngle));
         poseStack.scale(0.01f, 0.01f, 0.01f); // Smaller text size
-        // todo: improve the offset calculations
+        int priceAmounts = 0;
+        for(var i = 32; i < 36; i++){
+            if(!blockEntity.shopItems.getStackInSlot(i).isEmpty()){
+                priceAmounts++;
+            }
+        }
+
         float xOffset = 0;
-        int priceTypes = 0;
-        if(!blockEntity.shopItems.getStackInSlot(32).isEmpty()){
-            priceTypes += 1;
-        }
-        if(!blockEntity.shopItems.getStackInSlot(33).isEmpty()){
-            priceTypes += 1;
-        }
-        if(!blockEntity.shopItems.getStackInSlot(34).isEmpty()){
-            priceTypes += 1;
-        }
-        if(!blockEntity.shopItems.getStackInSlot(35).isEmpty()){
-            priceTypes += 1;
-        }
 
-        if(priceTypes == 4){
+        if(priceAmounts == 4){
             xOffset -= 40;
-        }
-
-        if(priceTypes == 3){
+        } else if (priceAmounts == 3){
             xOffset -= 25;
+        } else if(priceAmounts == 2){
+            xOffset -= 15;
         }
 
-        if(priceTypes == 2){
-            xOffset -= 10;
-        }
-
-        if (!blockEntity.shopItems.getStackInSlot(32).isEmpty()) {
-            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, pinkCoinStack, blockEntity.shopItems.getStackInSlot(32).getCount(), xOffset);
-            xOffset += 22; // Adjust spacing as needed
-        }
-        if (!blockEntity.shopItems.getStackInSlot(33).isEmpty()) {
-            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, goldCoinStack, blockEntity.shopItems.getStackInSlot(33).getCount(), xOffset);
-            xOffset += 22; // Adjust spacing as needed
-        }
-        if (!blockEntity.shopItems.getStackInSlot(34).isEmpty()) {
-            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, silverCoinStack, blockEntity.shopItems.getStackInSlot(34).getCount(), xOffset);
-            xOffset += 22; // Adjust spacing as needed
-        }
-        if (!blockEntity.shopItems.getStackInSlot(35).isEmpty()) {
-            renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, copperCoinStack, blockEntity.shopItems.getStackInSlot(35).getCount(), xOffset);
+        for(var i = 32; i < 36; i++){
+            if(!blockEntity.shopItems.getStackInSlot(i).isEmpty()){
+                renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, blockEntity.shopItems.getStackInSlot(i), blockEntity.shopItems.getStackInSlot(i).getCount(), xOffset);
+                xOffset += 22;
+            }
         }
 
         poseStack.popPose();
