@@ -1,10 +1,18 @@
 package net.fullstackjones.bigbraincurrency;
 
+import net.fullstackjones.bigbraincurrency.block.ModBlockEntities;
 import net.fullstackjones.bigbraincurrency.block.ModBlocks;
+import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntityRenderer;
 import net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes;
-import net.fullstackjones.bigbraincurrency.item.ModCreativeModeTabs;
 import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.fullstackjones.bigbraincurrency.menu.ModContainers;
+import net.fullstackjones.bigbraincurrency.menu.MoneyPouchScreen;
+import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
+import net.fullstackjones.bigbraincurrency.menu.ShopScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -20,6 +28,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+
+import static net.fullstackjones.bigbraincurrency.menu.ModContainers.MONEYPOUCHMENU;
+import static net.fullstackjones.bigbraincurrency.menu.ModContainers.SHOPMENU;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(BigBrainCurrency.MODID)
@@ -40,9 +51,9 @@ public class BigBrainCurrency
         NeoForge.EVENT_BUS.register(this);
 
         ModCreativeModeTabs.register(modEventBus);
-        ClientInit.init(modEventBus);
         ModAttachmentTypes.register(modEventBus);
         ModItems.register(modEventBus);
+        ModBlockEntities.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModContainers.register(modEventBus);
 
@@ -68,6 +79,17 @@ public class BigBrainCurrency
         public static void onClientSetup(FMLClientSetupEvent event)
         {
 
+        }
+
+        @SubscribeEvent
+        public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
+            event.registerBlockEntityRenderer(ModBlockEntities.SHOPENTITY.get(), ShopBlockEntityRenderer::new);
+        }
+
+        @SubscribeEvent
+        public static void registerScreens(RegisterMenuScreensEvent event) {
+            event.register(MONEYPOUCHMENU.get(), MoneyPouchScreen::new);
+            event.register(SHOPMENU.get(), ShopScreen::new);
         }
     }
 }

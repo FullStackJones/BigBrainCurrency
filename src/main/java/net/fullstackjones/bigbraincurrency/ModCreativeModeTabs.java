@@ -1,8 +1,8 @@
-package net.fullstackjones.bigbraincurrency.item;
+package net.fullstackjones.bigbraincurrency;
 
 
-import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
 import net.fullstackjones.bigbraincurrency.block.ModBlocks;
+import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -28,6 +28,7 @@ public class ModCreativeModeTabs {
                         output.accept(ModItems.PINKCOIN);
                         output.accept(ModItems.MONEY_POUCH);
                         output.accept(ModBlocks.PIGGYBANK_BLOCK);
+                        output.accept(ModBlocks.SHOP_BLOCK);
                     }).build());
 
     public static void register(IEventBus eventBus){

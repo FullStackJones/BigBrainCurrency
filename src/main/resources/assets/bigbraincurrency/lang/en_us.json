@@ -6,6 +6,18 @@
   "item.bigbraincurrency.moneypouch": "Money Pouch",
 
   "block.bigbraincurrency.brainbank": "Brain Coin Bank",
+  "block.bigbraincurrency.shop": "Shop",
 
-  "creativetab.bigbraincurrency.bigbraincurrency_items": "Big Brain Currency"
+  "creativetab.bigbraincurrency.bigbraincurrency_items": "Big Brain Currency",
+  "container.bigbraincurrency.shopentity": "Shop",
+  "container.bigbraincurrency.shop": "Shop",
+  "container.bigbraincurrency.shopentity.stock": "Stock",
+  "container.bigbraincurrency.shopentity.Item": "Item",
+  "container.bigbraincurrency.shopentity.Price": "Price",
+  "container.bigbraincurrency.shopentity.Profit": "Profit",
+
+  "shop.bigbraincurrency.outofStock": "This shop is out of stock!",
+  "shop.bigbraincurrency.insufficientFunds": "you dont not have sufficient funds!",
+  "shop.bigbraincurrency.pouchFull": "Your money pouch is full.",
+  "shop.bigbraincurrency.noProfit": "There is no profits to collect"
 }

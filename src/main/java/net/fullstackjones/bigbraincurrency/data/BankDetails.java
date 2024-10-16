@@ -1,5 +1,7 @@
 package net.fullstackjones.bigbraincurrency.data;
 
+import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -55,6 +57,10 @@ public class BankDetails {
 
     public String getBankBalance() {
         return bankBalance;
+    }
+
+    public int getBankBalanceValue() {
+        return CurrencyUtil.calculateTotalValue(copperCoins, silverCoins, goldCoins, pinkCoins);
     }
 
     public LocalDateTime getLastUpdated() {

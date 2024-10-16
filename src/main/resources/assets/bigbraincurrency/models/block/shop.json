@@ -1,0 +1,64 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "credit": "Made with Blockbench",
+  "texture_size": [128, 128],
+  "textures": {
+    "all": "bigbraincurrency:block/shop",
+    "0": "bigbraincurrency:block/shop",
+    "particle": "bigbraincurrency:block/shop"
+  },
+  "elements": [
+    {
+      "from": [1, 1, 1],
+      "to": [15, 15, 15],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+      "faces": {
+        "north": {"uv": [1.75, 12.125, 3.5, 13.875], "texture": "#0"},
+        "east": {"uv": [0, 12.125, 1.75, 13.875], "texture": "#0"},
+        "south": {"uv": [5.25, 12.125, 7, 13.875], "texture": "#0"},
+        "west": {"uv": [3.5, 12.125, 5.25, 13.875], "texture": "#0"},
+        "up": {"uv": [3.5, 12.125, 1.75, 10.375], "texture": "#0"},
+        "down": {"uv": [5.25, 10.375, 3.5, 12.125], "texture": "#0"}
+      }
+    },
+    {
+      "from": [0, 15, 0],
+      "to": [16, 16, 16],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 15, 8]},
+      "faces": {
+        "north": {"uv": [2, 15.875, 4, 16], "texture": "#0"},
+        "east": {"uv": [0, 15.875, 2, 16], "texture": "#0"},
+        "south": {"uv": [6, 15.875, 8, 16], "texture": "#0"},
+        "west": {"uv": [4, 15.875, 6, 16], "texture": "#0"},
+        "up": {"uv": [4, 15.875, 2, 13.875], "texture": "#0"},
+        "down": {"uv": [6, 13.875, 4, 15.875], "texture": "#0"}
+      }
+    },
+    {
+      "from": [0, 0, 0],
+      "to": [16, 1, 16],
+      "rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 8]},
+      "faces": {
+        "north": {"uv": [10, 15.875, 12, 16], "texture": "#0"},
+        "east": {"uv": [8, 15.875, 10, 16], "texture": "#0"},
+        "south": {"uv": [14, 15.875, 16, 16], "texture": "#0"},
+        "west": {"uv": [12, 15.875, 14, 16], "texture": "#0"},
+        "up": {"uv": [12, 15.875, 10, 13.875], "texture": "#0"},
+        "down": {"uv": [14, 13.875, 12, 15.875], "texture": "#0"}
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "scale": [0.25, 0.25, 0.25]
+    }
+  },
+  "groups": [
+    {
+      "name": "base",
+      "origin": [8, 0, 8],
+      "color": 0,
+      "children": [0, 1, 2]
+    }
+  ]
+}
