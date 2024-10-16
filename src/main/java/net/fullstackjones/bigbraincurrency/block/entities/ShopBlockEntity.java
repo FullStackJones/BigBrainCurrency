@@ -1,5 +1,6 @@
 package net.fullstackjones.bigbraincurrency.block.entities;
 
+import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
 import net.fullstackjones.bigbraincurrency.block.ModBlockEntities;
 import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.minecraft.core.BlockPos;
@@ -47,6 +48,29 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     public void setOwnerUUID(UUID owner) {
         this.owner = owner;
         setChanged();
+    }
+
+    public boolean IsThereProfit(){
+        return !shopItems.getStackInSlot(27).isEmpty() || !shopItems.getStackInSlot(28).isEmpty() || !shopItems.getStackInSlot(29).isEmpty() || !shopItems.getStackInSlot(30).isEmpty();
+    }
+
+    public boolean IsShopPriceSet(){
+        return !shopItems.getStackInSlot(32).isEmpty() || !shopItems.getStackInSlot(33).isEmpty() || !shopItems.getStackInSlot(34).isEmpty() || !shopItems.getStackInSlot(35).isEmpty();
+    }
+
+    public int GetShopBalance(){
+        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(30).getCount(), shopItems.getStackInSlot(29).getCount(), shopItems.getStackInSlot(28).getCount(), shopItems.getStackInSlot(27).getCount());
+    }
+
+    public int GetShopPrice(){
+        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(32).getCount(), shopItems.getStackInSlot(33).getCount(), shopItems.getStackInSlot(34).getCount(), shopItems.getStackInSlot(35).getCount());
+    }
+
+    public void UpdateShopProfits( ItemStack[] coins){
+        shopItems.insertItem(30, coins[0], false);
+        shopItems.insertItem(29, coins[1], false);
+        shopItems.insertItem(28, coins[2], false);
+        shopItems.insertItem(27, coins[3], false);
     }
 
     public void clearProfit(){

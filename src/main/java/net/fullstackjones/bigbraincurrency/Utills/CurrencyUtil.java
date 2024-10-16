@@ -18,28 +18,17 @@ public class CurrencyUtil {
     }
 
     public static ItemStack[] convertValueToCoins(int value) {
-        var copper = value;
-        if(copper > 99){
-            value = copper - 99;
-            copper = 99;
-        }
+        int pink = Math.min(value / PINK_VALUE, 99);
+        value = value - pink * PINK_VALUE;
 
-        var silver = value / SILVER_VALUE;
-        if(silver > 99){
-            value = value - (99 * SILVER_VALUE);
-            silver = 99;
-        }
+        int gold = Math.min(value / GOLD_VALUE, 99);
+        value = value - gold * GOLD_VALUE;
 
-        var gold = value / GOLD_VALUE;
-        if(gold > 99){
-            value = value - (99 * GOLD_VALUE);
-            gold = 99;
-        }
+        int silver = Math.min(value / SILVER_VALUE, 99);
+        value = value - silver * SILVER_VALUE;
 
-        var pink = value / PINK_VALUE;
-        if(99 * PINK_VALUE < value){
-            pink = 99;
-        }
+        int copper = value;
+
         ItemStack pinkCoinStack = new ItemStack(ModItems.PINKCOIN.get(), pink);
         ItemStack goldCoinStack = new ItemStack(ModItems.GOLDCOIN.get(), gold);
         ItemStack silverCoinStack = new ItemStack(ModItems.SILVERCOIN.get(), silver);

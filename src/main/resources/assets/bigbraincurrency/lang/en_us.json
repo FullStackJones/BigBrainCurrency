@@ -18,5 +18,6 @@
 
   "shop.bigbraincurrency.outofStock": "This shop is out of stock!",
   "shop.bigbraincurrency.insufficientFunds": "you dont not have sufficient funds!",
-  "shop.bigbraincurrency.pouchFull": "Your money pouch is full."
+  "shop.bigbraincurrency.pouchFull": "Your money pouch is full.",
+  "shop.bigbraincurrency.noProfit": "There is no profits to collect"
 }
