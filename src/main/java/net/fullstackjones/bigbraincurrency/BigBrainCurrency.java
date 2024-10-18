@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -90,6 +91,11 @@ public class BigBrainCurrency
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(MONEYPOUCHMENU.get(), MoneyPouchScreen::new);
             event.register(SHOPMENU.get(), ShopScreen::new);
+        }
+
+        @SubscribeEvent
+        public static void onGatherData(GatherDataEvent event) {
+            //event.getGenerator().addProvider(event.includeServer(), MyGlobalLootModifierProvider::new);
         }
     }
 }
