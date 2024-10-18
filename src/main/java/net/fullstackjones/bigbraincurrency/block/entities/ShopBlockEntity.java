@@ -59,11 +59,11 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public int GetShopBalance(){
-        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(30).getCount(), shopItems.getStackInSlot(29).getCount(), shopItems.getStackInSlot(28).getCount(), shopItems.getStackInSlot(27).getCount());
+        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(27).getCount(), shopItems.getStackInSlot(28).getCount(), shopItems.getStackInSlot(29).getCount(), shopItems.getStackInSlot(30).getCount());
     }
 
     public int GetShopPrice(){
-        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(32).getCount(), shopItems.getStackInSlot(33).getCount(), shopItems.getStackInSlot(34).getCount(), shopItems.getStackInSlot(35).getCount());
+        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(35).getCount(), shopItems.getStackInSlot(34).getCount(), shopItems.getStackInSlot(33).getCount(), shopItems.getStackInSlot(32).getCount());
     }
 
     public void UpdateShopProfits( ItemStack[] coins){
@@ -79,6 +79,17 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
         shopItems.setStackInSlot(29, ItemStack.EMPTY);
         shopItems.setStackInSlot(30, ItemStack.EMPTY);
         setChanged();
+    }
+
+    public boolean stockIsEmpty(int amount){
+        int countedItems = 0;
+        for(int i = 0; i < 27; i++){
+            countedItems += shopItems.getStackInSlot(i).getCount();
+            if(countedItems >= amount){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

@@ -30,6 +30,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes.BANKDETAILS;
 
 public class ShopBlock extends Block implements EntityBlock {
@@ -113,7 +116,7 @@ public class ShopBlock extends Block implements EntityBlock {
                 }
             }
             else {
-                if(stack == ModItems.MONEY_POUCH.toStack()){
+                if(stack.getItem().equals(ModItems.MONEY_POUCH.asItem())){
                     if(!shop.IsShopPriceSet()) {
                         MoveItemFromShopToPlayer(player, shop);
                     }
@@ -124,16 +127,20 @@ public class ShopBlock extends Block implements EntityBlock {
                         player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.insufficientFunds"));
                         return ItemInteractionResult.SUCCESS;
                     }
-                    if(MoveItemFromShopToPlayer(player, shop)){
-                        playerBalance -= shopPrice;
-                        ItemStack[] coins = CurrencyUtil.convertValueToCoins(playerBalance);
-                        shop.UpdateShopProfits(coins);
 
-                        BankDetails updatedDetails = details.update(coins[0].getCount(), coins[1].getCount(), coins[2].getCount(), coins[3].getCount());
-                        player.setData(BANKDETAILS, updatedDetails);
+                    if(shop.stockIsEmpty(shop.shopItems.getStackInSlot(31).getCount())){
+                        player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.outofStock"));
                         return ItemInteractionResult.SUCCESS;
                     }
 
+                    MoveItemFromShopToPlayer(player, shop);
+                    playerBalance -= shopPrice;
+                    ItemStack[] coins = CurrencyUtil.convertValueToCoins(playerBalance);
+                    shop.UpdateShopProfits(CurrencyUtil.convertValueToCoins(shopPrice));
+
+                    BankDetails updatedDetails = details.update(coins[0].getCount(), coins[1].getCount(), coins[2].getCount(), coins[3].getCount());
+                    player.setData(BANKDETAILS, updatedDetails);
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
 
@@ -141,22 +148,23 @@ public class ShopBlock extends Block implements EntityBlock {
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
-    private static boolean MoveItemFromShopToPlayer(Player player, ShopBlockEntity shop) {
+    private static void MoveItemFromShopToPlayer(Player player, ShopBlockEntity shop) {
         ItemStack referenceStack = shop.shopItems.getStackInSlot(31);
-        var removalSlot = 1;
+        ItemStack addToPlayer;
+        int remaining = referenceStack.getCount();
         for (int i = 0; i < 27; i++) {
             ItemStack slotStack = shop.shopItems.getStackInSlot(i);
-            if (slotStack.equals(referenceStack) && slotStack.getCount() == referenceStack.getCount()) {
-                removalSlot =  i;
+            if (slotStack.getItem().equals(referenceStack.getItem())) {
+                addToPlayer = shop.shopItems.extractItem(i, remaining, false);
+                if(remaining == 0){
+                    return;
+                }
+                else{
+                    remaining -= addToPlayer.getCount();
+                    player.addItem(addToPlayer);
+                }
             }
         }
-        if(removalSlot == 26 && shop.shopItems.getStackInSlot(26).isEmpty()){
-            player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.outofStock"));
-            return false;
-        }
-        ItemStack itemstack = shop.shopItems.extractItem(removalSlot, referenceStack.getCount(), false);
-        player.addItem(itemstack);
-        return true;
     }
 
     private static void InsertStackIntoStock(ItemStack stack, Player player, InteractionHand hand, ShopBlockEntity shop) {
