@@ -92,10 +92,5 @@ public class BigBrainCurrency
             event.register(MONEYPOUCHMENU.get(), MoneyPouchScreen::new);
             event.register(SHOPMENU.get(), ShopScreen::new);
         }
-
-        @SubscribeEvent
-        public static void onGatherData(GatherDataEvent event) {
-            //event.getGenerator().addProvider(event.includeServer(), MyGlobalLootModifierProvider::new);
-        }
     }
 }
