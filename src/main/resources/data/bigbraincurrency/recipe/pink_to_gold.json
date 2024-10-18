@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "bigbraincurrency:pinkcoin"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "id": "bigbraincurrency:goldcoin"
+  }
+}

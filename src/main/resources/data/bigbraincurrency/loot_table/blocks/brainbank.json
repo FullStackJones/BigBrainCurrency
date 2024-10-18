@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "bigbraincurrency:brainbank"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "bigbraincurrency:blocks/brainbank"
+}
