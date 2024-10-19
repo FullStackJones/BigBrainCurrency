@@ -122,6 +122,7 @@ public class ShopBlock extends Block implements EntityBlock {
                 if(stack.getItem().equals(ModItems.MONEY_POUCH.asItem())){
                     if(!shop.IsShopPriceSet()) {
                         MoveItemFromShopToPlayer(player, shop);
+                        return ItemInteractionResult.SUCCESS;
                     }
                     BankDetails details = player.getData(BANKDETAILS);
                     int playerBalance = CurrencyUtil.calculateTotalValue(details.getCopperCoins(), details.getSilverCoins(), details.getGoldCoins(), details.getPinkCoins());
