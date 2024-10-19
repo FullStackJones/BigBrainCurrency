@@ -63,6 +63,9 @@ public class ShopBlock extends Block implements EntityBlock {
                 } else if (player.isCreative()) {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
                 }
+                else{
+                    player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.notOwner"));
+                }
             }
         }
         return InteractionResult.SUCCESS;

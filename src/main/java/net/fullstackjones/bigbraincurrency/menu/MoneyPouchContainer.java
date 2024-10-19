@@ -26,7 +26,7 @@ public class MoneyPouchContainer extends AbstractContainerMenu {
     public MoneyPouchContainer(int containerId, Inventory playerInventory) {
         this(containerId, playerInventory,  new PlayerBankData(4,new BankDetails(0,0,0,0, LocalDateTime.now())));
     }
-
+    
     public MoneyPouchContainer(int id, Inventory playerInventory, PlayerBankData playerBankData) {
         super(MONEYPOUCHMENU.get(), id);
         this.playerInv = playerInventory;
@@ -53,36 +53,44 @@ public class MoneyPouchContainer extends AbstractContainerMenu {
         return true;
     }
 
+    private static final int HOTBAR_SLOT_COUNT = 9;
+    private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
+    private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
+    private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
+    private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+    private static final int VANILLA_FIRST_SLOT_INDEX = 0;
+    private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+    private static final int TE_INVENTORY_SLOT_COUNT = 4;  // must be the number of slots you have!
     @Override
-    public ItemStack quickMoveStack(Player player, int quickMovedSlotIndex) {
-        ItemStack quickMovedStack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(quickMovedSlotIndex);
-
-        if (slot != null && slot.hasItem()) {
-            ItemStack stackInSlot = slot.getItem();
-            quickMovedStack = stackInSlot.copy();
-
-            // Check if the slot is in the player's inventory (index >= 4)
-            if (quickMovedSlotIndex >= 4) {
-                // Move from player inventory to money pouch
-                if (!this.moveItemStackTo(stackInSlot, 0, 4, false)) {
-                    return ItemStack.EMPTY;
-                }
-            } else {
-                // Move from money pouch to player inventory
-                if (!this.moveItemStackTo(stackInSlot, 4, this.slots.size(), true)) {
-                    return ItemStack.EMPTY;
-                }
+    public ItemStack quickMoveStack(Player playerIn, int pIndex) {
+        Slot sourceSlot = slots.get(pIndex);
+        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
+        ItemStack sourceStack = sourceSlot.getItem();
+        ItemStack copyOfSourceStack = sourceStack.copy();
+        // Check if the slot clicked is one of the vanilla container slots
+        if (pIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
+            // This is a vanilla container slot so merge the stack into the tile inventory
+            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX
+                    + TE_INVENTORY_SLOT_COUNT, false)) {
+                return ItemStack.EMPTY;  // EMPTY_ITEM
             }
-
-            if (stackInSlot.isEmpty()) {
-                slot.set(ItemStack.EMPTY);
-            } else {
-                slot.setChanged();
+        } else if (pIndex < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
+            // This is a TE slot so merge the stack into the players inventory
+            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
+                return ItemStack.EMPTY;
             }
+        } else {
+            System.out.println("Invalid slotIndex:" + pIndex);
+            return ItemStack.EMPTY;
         }
-
-        return quickMovedStack;
+        // If stack size == 0 (the entire stack was moved) set slot contents to null
+        if (sourceStack.getCount() == 0) {
+            sourceSlot.set(ItemStack.EMPTY);
+        } else {
+            sourceSlot.setChanged();
+        }
+        sourceSlot.onTake(playerIn, sourceStack);
+        return copyOfSourceStack;
     }
 
     @Override
