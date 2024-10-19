@@ -2,12 +2,9 @@ package net.fullstackjones.bigbraincurrency.menu;
 
 import net.fullstackjones.bigbraincurrency.block.ModBlocks;
 import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
-import net.fullstackjones.bigbraincurrency.menu.customslots.CurrencySlot;
 import net.fullstackjones.bigbraincurrency.menu.customslots.PricingSlot;
 import net.fullstackjones.bigbraincurrency.menu.customslots.ShopCurrecySlot;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,7 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.SlotItemHandler;
-import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 import static net.fullstackjones.bigbraincurrency.item.ModItems.*;
 
@@ -133,6 +131,11 @@ public class ShopMenu extends AbstractContainerMenu {
         if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
+        int[] restrictedSlotIndex = {TE_INVENTORY_FIRST_SLOT_INDEX+32, TE_INVENTORY_FIRST_SLOT_INDEX+33, TE_INVENTORY_FIRST_SLOT_INDEX+34, TE_INVENTORY_FIRST_SLOT_INDEX+35};
+
+        if (Arrays.stream(restrictedSlotIndex).anyMatch(x -> x == pIndex)) {
+            return ItemStack.EMPTY;
+        }
         // Check if the slot clicked is one of the vanilla container slots
         if (pIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory

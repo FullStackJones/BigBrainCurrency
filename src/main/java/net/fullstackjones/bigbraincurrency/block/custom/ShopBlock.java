@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -29,6 +30,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes.BANKDETAILS;
 
@@ -59,6 +63,9 @@ public class ShopBlock extends Block implements EntityBlock {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
                 } else if (player.isCreative()) {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
+                }
+                else{
+                    player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.notOwner"));
                 }
             }
         }
@@ -113,9 +120,10 @@ public class ShopBlock extends Block implements EntityBlock {
                 }
             }
             else {
-                if(stack == ModItems.MONEY_POUCH.toStack()){
+                if(stack.getItem().equals(ModItems.MONEY_POUCH.asItem())){
                     if(!shop.IsShopPriceSet()) {
                         MoveItemFromShopToPlayer(player, shop);
+                        return ItemInteractionResult.SUCCESS;
                     }
                     BankDetails details = player.getData(BANKDETAILS);
                     int playerBalance = CurrencyUtil.calculateTotalValue(details.getCopperCoins(), details.getSilverCoins(), details.getGoldCoins(), details.getPinkCoins());
@@ -124,16 +132,20 @@ public class ShopBlock extends Block implements EntityBlock {
                         player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.insufficientFunds"));
                         return ItemInteractionResult.SUCCESS;
                     }
-                    if(MoveItemFromShopToPlayer(player, shop)){
-                        playerBalance -= shopPrice;
-                        ItemStack[] coins = CurrencyUtil.convertValueToCoins(playerBalance);
-                        shop.UpdateShopProfits(coins);
 
-                        BankDetails updatedDetails = details.update(coins[0].getCount(), coins[1].getCount(), coins[2].getCount(), coins[3].getCount());
-                        player.setData(BANKDETAILS, updatedDetails);
+                    if(shop.stockIsEmpty(shop.shopItems.getStackInSlot(31).getCount())){
+                        player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.outofStock"));
                         return ItemInteractionResult.SUCCESS;
                     }
 
+                    MoveItemFromShopToPlayer(player, shop);
+                    playerBalance -= shopPrice;
+                    ItemStack[] coins = CurrencyUtil.convertValueToCoins(playerBalance);
+                    shop.UpdateShopProfits(CurrencyUtil.convertValueToCoins(shopPrice));
+
+                    BankDetails updatedDetails = details.update(coins[0].getCount(), coins[1].getCount(), coins[2].getCount(), coins[3].getCount());
+                    player.setData(BANKDETAILS, updatedDetails);
+                    return ItemInteractionResult.SUCCESS;
                 }
             }
 
@@ -141,22 +153,23 @@ public class ShopBlock extends Block implements EntityBlock {
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
-    private static boolean MoveItemFromShopToPlayer(Player player, ShopBlockEntity shop) {
+    private static void MoveItemFromShopToPlayer(Player player, ShopBlockEntity shop) {
         ItemStack referenceStack = shop.shopItems.getStackInSlot(31);
-        var removalSlot = 1;
+        ItemStack addToPlayer;
+        int remaining = referenceStack.getCount();
         for (int i = 0; i < 27; i++) {
             ItemStack slotStack = shop.shopItems.getStackInSlot(i);
-            if (slotStack.equals(referenceStack) && slotStack.getCount() == referenceStack.getCount()) {
-                removalSlot =  i;
+            if (slotStack.getItem().equals(referenceStack.getItem())) {
+                addToPlayer = shop.shopItems.extractItem(i, remaining, false);
+                if(remaining == 0){
+                    return;
+                }
+                else{
+                    remaining -= addToPlayer.getCount();
+                    player.addItem(addToPlayer);
+                }
             }
         }
-        if(removalSlot == 26 && shop.shopItems.getStackInSlot(26).isEmpty()){
-            player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.outofStock"));
-            return false;
-        }
-        ItemStack itemstack = shop.shopItems.extractItem(removalSlot, referenceStack.getCount(), false);
-        player.addItem(itemstack);
-        return true;
     }
 
     private static void InsertStackIntoStock(ItemStack stack, Player player, InteractionHand hand, ShopBlockEntity shop) {
@@ -228,5 +241,34 @@ public class ShopBlock extends Block implements EntityBlock {
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ShopBlockEntity(pos, state);
+    }
+
+    @Override
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof ShopBlockEntity shopBlockEntity) {
+            if(player.isCreative() || shopBlockEntity.getOwnerUUID().equals(player.getUUID())){
+                return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+            }
+        }
+        player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.notOwner"));
+        return false;
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        if (!state.is(newState.getBlock())) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof ShopBlockEntity shopBlockEntity) {
+                for (int i = 0; i < 32; i++) {
+                    ItemStack stack = shopBlockEntity.shopItems.getStackInSlot(i);
+                    if (!stack.isEmpty()) {
+                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
+                    }
+                }
+                level.updateNeighbourForOutputSignal(pos, this);
+            }
+            super.onRemove(state, level, pos, newState, movedByPiston);
+        }
     }
 }
