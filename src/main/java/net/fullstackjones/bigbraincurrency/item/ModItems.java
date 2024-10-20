@@ -22,7 +22,7 @@ public class ModItems {
     public static final DeferredItem<Item> PINKCOIN = ITEMS.register(
             "pinkcoin",
             () -> new Item(new Item.Properties().stacksTo(99)));
-    public static final DeferredItem<Item> MONEY_POUCH = ITEMS.register(
+    public static final DeferredItem<Item> MONEYPOUCH = ITEMS.register(
             "moneypouch",
             () -> new MoneyPouchItem(new Item.Properties()
                     .stacksTo(1)));

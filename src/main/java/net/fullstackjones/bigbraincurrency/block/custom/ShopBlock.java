@@ -77,7 +77,7 @@ public class ShopBlock extends Block implements EntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof ShopBlockEntity shop) {
             if (shop.getOwnerUUID().equals(player.getUUID())) {
-                if(stack.getItem().equals(ModItems.MONEY_POUCH.asItem())){
+                if(stack.getItem().equals(ModItems.MONEYPOUCH.asItem())){
                     if(!shop.IsThereProfit()){
                         player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.noProfit"));
                         return ItemInteractionResult.SUCCESS;
@@ -120,7 +120,7 @@ public class ShopBlock extends Block implements EntityBlock {
                 }
             }
             else {
-                if(stack.getItem().equals(ModItems.MONEY_POUCH.asItem())){
+                if(stack.getItem().equals(ModItems.MONEYPOUCH.asItem())){
                     if(!shop.IsShopPriceSet()) {
                         MoveItemFromShopToPlayer(player, shop);
                         return ItemInteractionResult.SUCCESS;
