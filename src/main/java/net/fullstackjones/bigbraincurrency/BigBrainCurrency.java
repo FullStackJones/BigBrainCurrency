@@ -5,15 +5,12 @@ import net.fullstackjones.bigbraincurrency.block.ModBlocks;
 import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntityRenderer;
 import net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes;
 import net.fullstackjones.bigbraincurrency.item.ModItems;
+import net.fullstackjones.bigbraincurrency.loottables.ModLootModifiers;
 import net.fullstackjones.bigbraincurrency.menu.ModContainers;
 import net.fullstackjones.bigbraincurrency.menu.MoneyPouchScreen;
-import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.fullstackjones.bigbraincurrency.menu.ShopScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -57,6 +54,7 @@ public class BigBrainCurrency
         ModBlockEntities.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModContainers.register(modEventBus);
+        ModLootModifiers.register(modEventBus);
 
     }
 
