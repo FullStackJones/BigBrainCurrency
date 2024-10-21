@@ -7,13 +7,9 @@ import net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes;
 import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.fullstackjones.bigbraincurrency.menu.ModContainers;
 import net.fullstackjones.bigbraincurrency.menu.MoneyPouchScreen;
-import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.fullstackjones.bigbraincurrency.menu.ShopScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
