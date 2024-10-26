@@ -13,7 +13,7 @@ public class ModAttachmentTypes {
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, BigBrainCurrency.MODID);
 
     public static final Supplier<AttachmentType<BankDetails>> BANKDETAILS = ATTACHMENT_TYPES.register(
-            "bankdetails", () -> AttachmentType.builder(() -> new BankDetails(0,0,0,0, LocalDateTime.now())).serialize(BankDetailsCodec.CODEC).build()
+            "bankdetails", () -> AttachmentType.builder(() -> new BankDetails(0,0,0,0, LocalDateTime.now())).serialize(BankDetailsCodec.CODEC).copyOnDeath().build()
     );
 
     public static void register(IEventBus eventBus) {

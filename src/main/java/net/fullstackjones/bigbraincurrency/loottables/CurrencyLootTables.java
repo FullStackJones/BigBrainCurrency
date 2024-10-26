@@ -17,14 +17,13 @@ public class CurrencyLootTables {
     public static Random r = new Random();
 
     static {
-        BASIC_LOOT.add(() -> new ItemStack(ModItems.COPPERCOIN.get(), 1 + r.nextInt(3)));
-        BASIC_LOOT.add(() -> new ItemStack(ModItems.SILVERCOIN.get(), 1));
+        BASIC_LOOT.add(() -> new ItemStack(ModItems.COPPERCOIN.get(), 1 + r.nextInt(5)));
 
-        UNCOMMON_LOOT.add(() -> new ItemStack(ModItems.COPPERCOIN.get(), 1 + r.nextInt(5)));
-        UNCOMMON_LOOT.add(() -> new ItemStack(ModItems.SILVERCOIN.get(), 1 + r.nextInt(3)));
+        UNCOMMON_LOOT.add(() -> new ItemStack(ModItems.COPPERCOIN.get(), 1 + r.nextInt(9)));
+        UNCOMMON_LOOT.add(() -> new ItemStack(ModItems.SILVERCOIN.get(), 1 + r.nextInt(1)));
 
-        UNCOMMON_LOOT.add(() -> new ItemStack(ModItems.COPPERCOIN.get(), 1));
-        RARE_LOOT.add(() -> new ItemStack(ModItems.SILVERCOIN.get(), 1 + r.nextInt(5)));
+        RARE_LOOT.add(() -> new ItemStack(ModItems.COPPERCOIN.get(), 5));
+        RARE_LOOT.add(() -> new ItemStack(ModItems.SILVERCOIN.get(), 1 + r.nextInt(3)));
     }
 
     public static ItemStack getRandomItem(List<Supplier<ItemStack>> pool) {
