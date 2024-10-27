@@ -59,7 +59,7 @@ public class ShopBlock extends Block implements EntityBlock {
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof ShopBlockEntity shop) {
-                if (shop.getOwnerUUID() == player.getUUID()) {
+                if (shop.getOwnerUUID().equals(player.getUUID())) {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
                 } else if (player.isCreative()) {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);

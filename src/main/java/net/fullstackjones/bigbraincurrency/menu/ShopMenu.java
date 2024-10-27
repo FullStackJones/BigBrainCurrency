@@ -124,18 +124,13 @@ public class ShopMenu extends AbstractContainerMenu {
     private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
     private static final int VANILLA_FIRST_SLOT_INDEX = 0;
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
-    private static final int TE_INVENTORY_SLOT_COUNT = 32;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 36;  // must be the number of slots you have!
     @Override
     public ItemStack quickMoveStack(Player playerIn, int pIndex) {
         Slot sourceSlot = slots.get(pIndex);
         if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
-        int[] restrictedSlotIndex = {TE_INVENTORY_FIRST_SLOT_INDEX+32, TE_INVENTORY_FIRST_SLOT_INDEX+33, TE_INVENTORY_FIRST_SLOT_INDEX+34, TE_INVENTORY_FIRST_SLOT_INDEX+35};
-
-        if (Arrays.stream(restrictedSlotIndex).anyMatch(x -> x == pIndex)) {
-            return ItemStack.EMPTY;
-        }
         // Check if the slot clicked is one of the vanilla container slots
         if (pIndex < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
             // This is a vanilla container slot so merge the stack into the tile inventory
