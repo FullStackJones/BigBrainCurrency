@@ -59,7 +59,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public int GetShopBalance(){
-        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(27).getCount(), shopItems.getStackInSlot(28).getCount(), shopItems.getStackInSlot(29).getCount(), shopItems.getStackInSlot(30).getCount());
+        return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(30).getCount(), shopItems.getStackInSlot(29).getCount(), shopItems.getStackInSlot(28).getCount(), shopItems.getStackInSlot(27).getCount());
     }
 
     public int GetShopPrice(){

@@ -59,9 +59,7 @@ public class ShopBlock extends Block implements EntityBlock {
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide) {
             if (level.getBlockEntity(pos) instanceof ShopBlockEntity shop) {
-                if (shop.getOwnerUUID().equals(player.getUUID())) {
-                    ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
-                } else if (player.isCreative()) {
+                if (shop.getOwnerUUID().equals(player.getUUID()) || player.isCreative()) {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
                 }
                 else{
@@ -85,23 +83,20 @@ public class ShopBlock extends Block implements EntityBlock {
 
                     BankDetails details = player.getData(BANKDETAILS);
                     int playerBalance = details.getBankBalanceValue();
-                    if(playerBalance == CurrencyUtil.getMaxValue()){
+                    if(playerBalance >= CurrencyUtil.getMaxValue()){
                         player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.pouchFull"));
                         return ItemInteractionResult.SUCCESS;
                     }
 
                     int ShopBalance = shop.GetShopBalance();
-                    int calculatedBalance = playerBalance + ShopBalance;
-                    if(calculatedBalance > CurrencyUtil.getMaxValue()){
+                    int remainingBalance = 0;
+
+                    if(playerBalance + ShopBalance >= CurrencyUtil.getMaxValue()){
                         playerBalance = CurrencyUtil.getMaxValue();
+                        remainingBalance = (playerBalance + ShopBalance) - CurrencyUtil.getMaxValue();
                     }
                     else{
-                        playerBalance = calculatedBalance;
-                    }
-
-                    int remainingBalance = calculatedBalance - CurrencyUtil.getMaxValue();
-                    if(remainingBalance < 0){
-                        remainingBalance = 0;
+                        playerBalance += ShopBalance;
                     }
 
                     ItemStack[] remainingCoins = CurrencyUtil.convertValueToCoins(remainingBalance);
