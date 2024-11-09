@@ -1,6 +1,8 @@
 package net.fullstackjones.bigbraincurrency.Utills;
 
 import net.fullstackjones.bigbraincurrency.item.ModItems;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class CurrencyUtil {
@@ -15,6 +17,24 @@ public class CurrencyUtil {
         int pinkValue = pinkCoin * PINK_VALUE;
 
         return copperCoin + silverValue + goldValue + pinkValue;
+    }
+
+    public static int getStackValue(ItemStack stack) {
+        Item item = stack.getItem();
+        int count = stack.getCount();
+
+        if (stack.is(ModTags.Items.CURRENCY_ITEMS)) {
+            if (item == ModItems.COPPERCOIN.get()) {
+                return count;
+            } else if (item == ModItems.SILVERCOIN.get()) {
+                return count * SILVER_VALUE;
+            } else if (item == ModItems.GOLDCOIN.get()) {
+                return count * GOLD_VALUE;
+            } else if (item == ModItems.PINKCOIN.get()) {
+                return count * PINK_VALUE;
+            }
+        }
+        return 0;
     }
 
     public static ItemStack[] convertValueToCoins(int value) {
