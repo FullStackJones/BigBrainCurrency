@@ -1,6 +1,7 @@
 package net.fullstackjones.bigbraincurrency.block.custom;
 
 import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
+import net.fullstackjones.bigbraincurrency.Utills.ModTags;
 import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.data.BankDetails;
 import net.fullstackjones.bigbraincurrency.item.ModItems;
@@ -28,11 +29,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import static net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes.BANKDETAILS;
 
@@ -62,8 +60,43 @@ public class ShopBlock extends Block implements EntityBlock {
                 if (shop.getOwnerUUID().equals(player.getUUID()) || player.isCreative()) {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
                 }
-                else{
-                    player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.notOwner"));
+                else
+                {
+                    if(player.getInventory().contains(ModTags.Items.CURRENCY_ITEMS) || player.getInventory().contains(ModItems.MONEYPOUCH.toStack())){
+
+                        int playerBalance = 0;
+                        BankDetails details = player.getData(BANKDETAILS);
+                        for (ItemStack itemStack : player.getInventory().items) {
+                            if (itemStack.is(ModItems.MONEYPOUCH)){
+                                playerBalance += CurrencyUtil.calculateTotalValue(details.getCopperCoins(), details.getSilverCoins(), details.getGoldCoins(), details.getPinkCoins());
+                            }
+                            else{
+                                playerBalance += CurrencyUtil.getStackValue(itemStack);
+                            }
+                        }
+                        int shopPrice = shop.GetShopPrice();
+                        if(playerBalance < shopPrice){
+                            player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.insufficientFunds"));
+                            return InteractionResult.SUCCESS;
+                        }
+
+                        if(shop.stockIsEmpty(shop.shopItems.getStackInSlot(31).getCount())){
+                            player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.outofStock"));
+                            return InteractionResult.SUCCESS;
+                        }
+
+                        MoveItemFromShopToPlayer(player, shop);
+                        playerBalance -= shopPrice;
+                        ItemStack[] coins = CurrencyUtil.convertValueToCoins(playerBalance);
+                        shop.UpdateShopProfits(CurrencyUtil.convertValueToCoins(shopPrice));
+
+                        BankDetails updatedDetails = details.update(coins[0].getCount(), coins[1].getCount(), coins[2].getCount(), coins[3].getCount());
+                        player.setData(BANKDETAILS, updatedDetails);
+                        return InteractionResult.SUCCESS;
+                    }
+                    else{
+                        player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.insufficientFunds"));
+                    }
                 }
             }
         }
@@ -108,7 +141,6 @@ public class ShopBlock extends Block implements EntityBlock {
                     player.setData(BANKDETAILS, updatedDetails);
 
                     return ItemInteractionResult.SUCCESS;
-
                 } else if (stack.getItem() == shop.shopItems.getStackInSlot(31).getItem() && !shop.shopItems.getStackInSlot(31).isEmpty()) {
                     InsertStackIntoStock(stack, player, hand, shop);
                     return ItemInteractionResult.SUCCESS;
@@ -143,12 +175,11 @@ public class ShopBlock extends Block implements EntityBlock {
                     return ItemInteractionResult.SUCCESS;
                 }
             }
-
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
-    private static void MoveItemFromShopToPlayer(Player player, ShopBlockEntity shop) {
+    private void MoveItemFromShopToPlayer(Player player, ShopBlockEntity shop) {
         ItemStack referenceStack = shop.shopItems.getStackInSlot(31);
         ItemStack addToPlayer;
         int remaining = referenceStack.getCount();
@@ -167,7 +198,7 @@ public class ShopBlock extends Block implements EntityBlock {
         }
     }
 
-    private static void InsertStackIntoStock(ItemStack stack, Player player, InteractionHand hand, ShopBlockEntity shop) {
+    private void InsertStackIntoStock(ItemStack stack, Player player, InteractionHand hand, ShopBlockEntity shop) {
         for (int i = 0; i < 27; i++) {
             ItemStack slotStack = shop.shopItems.getStackInSlot(i);
             if (slotStack.isEmpty() || (slotStack.getItem().equals(stack.getItem()) && slotStack.getCount() < slotStack.getMaxStackSize())) {
