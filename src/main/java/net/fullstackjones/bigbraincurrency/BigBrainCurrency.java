@@ -2,7 +2,7 @@ package net.fullstackjones.bigbraincurrency;
 
 import net.fullstackjones.bigbraincurrency.registration.*;
 import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntityRenderer;
-import net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes;
+import net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes;
 import net.fullstackjones.bigbraincurrency.registration.ModMenus;
 import net.fullstackjones.bigbraincurrency.menu.MoneyPouchScreen;
 import net.fullstackjones.bigbraincurrency.menu.ShopScreen;

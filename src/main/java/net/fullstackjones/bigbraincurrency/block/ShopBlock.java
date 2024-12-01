@@ -32,7 +32,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 
-import static net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes.BANKDETAILS;
+import static net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes.BANKDETAILS;
 
 public class ShopBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;

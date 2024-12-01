@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes.BANKDETAILS;
+import static net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes.BANKDETAILS;
 
 public class MoneyPouchItem extends Item {
     public MoneyPouchItem(Properties properties) {
