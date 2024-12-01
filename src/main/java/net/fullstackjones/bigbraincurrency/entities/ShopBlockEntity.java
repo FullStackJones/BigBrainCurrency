@@ -1,7 +1,7 @@
-package net.fullstackjones.bigbraincurrency.block.entities;
+package net.fullstackjones.bigbraincurrency.entities;
 
 import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
-import net.fullstackjones.bigbraincurrency.block.ModBlockEntities;
+import net.fullstackjones.bigbraincurrency.registration.ModBlockEntities;
 import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

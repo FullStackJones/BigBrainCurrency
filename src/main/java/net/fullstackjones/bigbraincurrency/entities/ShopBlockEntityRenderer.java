@@ -1,8 +1,7 @@
-package net.fullstackjones.bigbraincurrency.block.entities;
+package net.fullstackjones.bigbraincurrency.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.fullstackjones.bigbraincurrency.item.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,8 +14,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
-
-import java.util.StringJoiner;
 
 public class ShopBlockEntityRenderer implements BlockEntityRenderer<ShopBlockEntity> {
     public ShopBlockEntityRenderer(BlockEntityRendererProvider.Context context) {

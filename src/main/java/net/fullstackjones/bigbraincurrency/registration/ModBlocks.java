@@ -1,9 +1,7 @@
-package net.fullstackjones.bigbraincurrency.block;
+package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
-import net.fullstackjones.bigbraincurrency.block.custom.PiggyBankBlock;
-import net.fullstackjones.bigbraincurrency.block.custom.ShopBlock;
-import net.fullstackjones.bigbraincurrency.item.ModItems;
+import net.fullstackjones.bigbraincurrency.block.ShopBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -18,13 +16,14 @@ import java.util.function.Supplier;
 public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(BigBrainCurrency.MODID);
 
-    public static final DeferredBlock<Block> PIGGYBANK_BLOCK = registerBlock(
-            "brainbank",
-            () -> new PiggyBankBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
-
     public static final DeferredBlock<ShopBlock> SHOP_BLOCK = registerBlock(
             "shop",
             () -> new ShopBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
+
+    public static final DeferredBlock<ShopBlock> BRAINBANK_BLOCK = registerBlock(
+            "brainbank",
+            () -> new ShopBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
+
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block){
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);

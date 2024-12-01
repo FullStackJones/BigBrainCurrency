@@ -1,7 +1,7 @@
-package net.fullstackjones.bigbraincurrency.item;
+package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
-import net.fullstackjones.bigbraincurrency.item.custom.MoneyPouchItem;
+import net.fullstackjones.bigbraincurrency.item.MoneyPouchItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;

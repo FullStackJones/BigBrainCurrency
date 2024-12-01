@@ -1,7 +1,6 @@
 package net.fullstackjones.bigbraincurrency.Utills;
 
-import net.fullstackjones.bigbraincurrency.item.ModItems;
-import net.minecraft.tags.TagKey;
+import net.fullstackjones.bigbraincurrency.registration.ModItems;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 

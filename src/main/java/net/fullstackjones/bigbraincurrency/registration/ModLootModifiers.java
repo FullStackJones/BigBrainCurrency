@@ -1,7 +1,8 @@
-package net.fullstackjones.bigbraincurrency.loottables;
+package net.fullstackjones.bigbraincurrency.registration;
 
 import com.mojang.serialization.MapCodec;
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
+import net.fullstackjones.bigbraincurrency.loottables.BigBrainCurrencyLootModifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.registries.DeferredHolder;

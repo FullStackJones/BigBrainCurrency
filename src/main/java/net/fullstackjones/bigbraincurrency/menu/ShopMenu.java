@@ -1,9 +1,10 @@
 package net.fullstackjones.bigbraincurrency.menu;
 
-import net.fullstackjones.bigbraincurrency.block.ModBlocks;
-import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
+import net.fullstackjones.bigbraincurrency.registration.ModBlocks;
+import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.menu.customslots.PricingSlot;
 import net.fullstackjones.bigbraincurrency.menu.customslots.ShopCurrecySlot;
+import net.fullstackjones.bigbraincurrency.registration.ModMenus;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -16,9 +17,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-import java.util.Arrays;
-
-import static net.fullstackjones.bigbraincurrency.item.ModItems.*;
+import static net.fullstackjones.bigbraincurrency.registration.ModItems.*;
 
 public class ShopMenu extends AbstractContainerMenu {
     protected final int inventoryColumns = 9;
@@ -38,7 +37,7 @@ public class ShopMenu extends AbstractContainerMenu {
     }
 
     public ShopMenu(int containerId, Inventory inventory, BlockEntity shop) {
-        super(ModContainers.SHOPMENU.get(), containerId);
+        super(ModMenus.SHOPMENU.get(), containerId);
         this.blockEntity = ((ShopBlockEntity) shop);
         this.playerInventory = inventory;
         this.level = inventory.player.level();

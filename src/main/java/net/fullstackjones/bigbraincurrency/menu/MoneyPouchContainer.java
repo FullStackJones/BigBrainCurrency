@@ -11,8 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import java.time.LocalDateTime;
 
 import static net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes.BANKDETAILS;
-import static net.fullstackjones.bigbraincurrency.item.ModItems.*;
-import static net.fullstackjones.bigbraincurrency.menu.ModContainers.MONEYPOUCHMENU;
+import static net.fullstackjones.bigbraincurrency.registration.ModItems.*;
+import static net.fullstackjones.bigbraincurrency.registration.ModMenus.MONEYPOUCHMENU;
 
 public class MoneyPouchContainer extends AbstractContainerMenu {
 

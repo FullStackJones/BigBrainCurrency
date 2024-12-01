@@ -1,6 +1,8 @@
-package net.fullstackjones.bigbraincurrency.menu;
+package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
+import net.fullstackjones.bigbraincurrency.menu.MoneyPouchContainer;
+import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,7 +15,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-public class ModContainers {
+public class ModMenus {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, BigBrainCurrency.MODID);
 
     public static final Supplier<MenuType<MoneyPouchContainer>> MONEYPOUCHMENU =

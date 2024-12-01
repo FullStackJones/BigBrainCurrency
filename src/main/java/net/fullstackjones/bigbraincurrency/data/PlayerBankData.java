@@ -3,7 +3,7 @@ package net.fullstackjones.bigbraincurrency.data;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 
-import static net.fullstackjones.bigbraincurrency.item.ModItems.*;
+import static net.fullstackjones.bigbraincurrency.registration.ModItems.*;
 
 public class PlayerBankData extends SimpleContainer {
     private BankDetails bankDetails;

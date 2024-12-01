@@ -1,10 +1,10 @@
-package net.fullstackjones.bigbraincurrency.block.custom;
+package net.fullstackjones.bigbraincurrency.block;
 
 import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
 import net.fullstackjones.bigbraincurrency.Utills.ModTags;
-import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
+import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.data.BankDetails;
-import net.fullstackjones.bigbraincurrency.item.ModItems;
+import net.fullstackjones.bigbraincurrency.registration.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

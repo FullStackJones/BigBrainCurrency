@@ -1,4 +1,4 @@
-package net.fullstackjones.bigbraincurrency.item.custom;
+package net.fullstackjones.bigbraincurrency.item;
 
 import net.fullstackjones.bigbraincurrency.menu.MoneyPouchContainer;
 import net.fullstackjones.bigbraincurrency.data.PlayerBankData;
