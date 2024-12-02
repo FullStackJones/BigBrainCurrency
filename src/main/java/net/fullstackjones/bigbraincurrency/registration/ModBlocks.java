@@ -1,6 +1,7 @@
 package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
+import net.fullstackjones.bigbraincurrency.block.BrainBankBlock;
 import net.fullstackjones.bigbraincurrency.block.ShopBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -20,9 +21,9 @@ public class ModBlocks {
             "shop",
             () -> new ShopBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
 
-    public static final DeferredBlock<ShopBlock> BRAINBANK_BLOCK = registerBlock(
+    public static final DeferredBlock<BrainBankBlock> BRAINBANK_BLOCK = registerBlock(
             "brainbank",
-            () -> new ShopBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
+            () -> new BrainBankBlock(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(2.0f, 2.0f)));
 
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block){

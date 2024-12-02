@@ -1,6 +1,8 @@
 package net.fullstackjones.bigbraincurrency.block;
 
 import net.fullstackjones.bigbraincurrency.data.BrainBankData;
+import net.fullstackjones.bigbraincurrency.entities.BrainBankBlockEntity;
+import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -29,7 +31,7 @@ public class BrainBankBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return null;
+        return new BrainBankBlockEntity(pos, state);
     }
 
     @Override

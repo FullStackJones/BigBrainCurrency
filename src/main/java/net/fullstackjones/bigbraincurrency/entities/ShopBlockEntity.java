@@ -38,7 +38,7 @@ public class ShopBlockEntity extends BlockEntity implements MenuProvider {
     private UUID owner = null;
 
     public ShopBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.SHOPENTITY.get(), pos, state);
+        super(ModBlockEntities.SHOP_ENTITY.get(), pos, state);
     }
 
     public UUID getOwnerUUID() {

@@ -79,7 +79,7 @@ public class BigBrainCurrency
 
         @SubscribeEvent
         public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerBlockEntityRenderer(ModBlockEntities.SHOPENTITY.get(), ShopBlockEntityRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.SHOP_ENTITY.get(), ShopBlockEntityRenderer::new);
         }
 
         @SubscribeEvent
