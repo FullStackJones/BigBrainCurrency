@@ -89,7 +89,6 @@ public class BrainBankBlockEntity extends BlockEntity implements MenuProvider {
             if (LocalDateTime.now().isAfter(LocalDateTime.now().withHour(12).withMinute(0).withSecond(0).withNano(0))
                     && blockEntity.data.getBankValue() == 0 && !blockEntity.data.getHadUbi()) {
                 blockEntity.data.setBankValue(9);
-                blockEntity.data.setHadUbi(true);
                 blockEntity.data.setUbiSetTime(LocalDateTime.now().withHour(12).withMinute(0).withSecond(0).withNano(0));
             }
             if (LocalDateTime.now().isAfter(blockEntity.data.getUbiSetTime().plusDays(1)) && blockEntity.data.getHadUbi()) {

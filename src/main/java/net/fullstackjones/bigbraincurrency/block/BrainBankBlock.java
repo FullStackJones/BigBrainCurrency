@@ -39,9 +39,6 @@ public class BrainBankBlock extends Block implements EntityBlock {
     @SuppressWarnings("unchecked") // Due to generics, an unchecked cast is necessary here.
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // You can return different tickers here, depending on whatever factors you want. A common use case would be
-        // to return different tickers on the client or server, only tick one side to begin with,
-        // or only return a ticker for some blockstates (e.g. when using a "my machine is working" blockstate property).
         return type == ModBlockEntities.BRAINBANK_ENTITY.get() ? (BlockEntityTicker<T>) BrainBankBlockEntity::tick : null;
     }
 

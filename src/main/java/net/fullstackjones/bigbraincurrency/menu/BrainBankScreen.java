@@ -9,6 +9,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class BrainBankScreen extends AbstractContainerScreen<BrainBankMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(BigBrainCurrency.MODID,"textures/gui/brainbank.png");
 
@@ -29,6 +32,9 @@ public class BrainBankScreen extends AbstractContainerScreen<BrainBankMenu> {
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
+        if(this.menu.blockEntity.getData().getHadUbi()){
+            this.renderCountdownTimer(guiGraphics);
+        }
     }
 
     @Override
@@ -37,5 +43,22 @@ public class BrainBankScreen extends AbstractContainerScreen<BrainBankMenu> {
         this.inventoryLabelY = 98;
         this.titleLabelY = 26;
         this.titleLabelX = 62;
+
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY,  0xFFFFFF, false);
+    }
+
+    private void renderCountdownTimer(GuiGraphics guiGraphics) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime midday = now.withHour(12).withMinute(0).withSecond(0).withNano(0);
+        if (now.isAfter(midday)) {
+            midday = midday.plusDays(1);
+        }
+        Duration duration = Duration.between(now, midday);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutes() % 60;
+        long seconds = duration.toSeconds() % 60;
+
+        String timerText = String.format("%02d : %02d : %02d", hours, minutes, seconds);
+        guiGraphics.drawString(this.font, timerText, this.titleLabelX + 124, this.titleLabelY + 35, 0xFFFFFFFF, false);
     }
 }
