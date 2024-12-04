@@ -1,5 +1,6 @@
 package net.fullstackjones.bigbraincurrency;
 
+import net.fullstackjones.bigbraincurrency.menu.BrainBankScreen;
 import net.fullstackjones.bigbraincurrency.registration.*;
 import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntityRenderer;
 import net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes;
@@ -24,8 +25,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-import static net.fullstackjones.bigbraincurrency.registration.ModMenus.MONEYPOUCHMENU;
-import static net.fullstackjones.bigbraincurrency.registration.ModMenus.SHOPMENU;
+import static net.fullstackjones.bigbraincurrency.registration.ModMenus.*;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(BigBrainCurrency.MODID)
@@ -86,6 +86,7 @@ public class BigBrainCurrency
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(MONEYPOUCHMENU.get(), MoneyPouchScreen::new);
             event.register(SHOPMENU.get(), ShopScreen::new);
+            event.register(BRAINBANKMENU.get(), BrainBankScreen::new);
         }
     }
 }

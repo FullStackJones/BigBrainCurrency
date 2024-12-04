@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class BrainBankDataCodec {
     public static final Codec<BrainBankData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.INT.fieldOf("BankValue").forGetter(BrainBankData::getBankValue),
-            Codec.STRING.xmap(LocalDateTime::parse, LocalDateTime::toString).fieldOf("UBITimeStamp").forGetter(BrainBankData::getUBITimeStamp)
+            Codec.BOOL.fieldOf("HadUbi").forGetter(BrainBankData::getHadUbi),
+            Codec.STRING.xmap(LocalDateTime::parse, LocalDateTime::toString).fieldOf("UbiSetTime").forGetter(BrainBankData::getUbiSetTime)
     ).apply(instance, BrainBankData::new));
 }

@@ -10,40 +10,56 @@ import java.time.LocalDateTime;
 
 public class BrainBankData implements INBTSerializable<CompoundTag> {
     protected int BankValue;
-    protected LocalDateTime UBITimeStamp;
+    protected boolean HadUbi;
+    protected LocalDateTime UbiSetTime;
 
-    public BrainBankData(int BankValue, LocalDateTime UBITimeStamp) {
+    public BrainBankData(int BankValue) {
+        this(BankValue, false, LocalDateTime.now());
+    }
+
+    public BrainBankData(int BankValue, boolean HadUbi, LocalDateTime UbiSetTime) {
         this.BankValue = BankValue;
-        this.UBITimeStamp = UBITimeStamp;
+        this.HadUbi = HadUbi;
+        this.UbiSetTime = UbiSetTime;
     }
 
     public int getBankValue() {
         return BankValue;
     }
 
+    public boolean getHadUbi() {
+        return HadUbi;
+    }
+
+    public LocalDateTime getUbiSetTime() {
+        return UbiSetTime;
+    }
+
+    public void setHadUbi(boolean HadUbi) {
+        this.HadUbi = HadUbi;
+    }
+
     public void setBankValue(int BankValue) {
         this.BankValue = BankValue;
     }
 
-    public void setUBITimeStamp(LocalDateTime ubiTimeStamp) {
-        this.UBITimeStamp = ubiTimeStamp;
-    }
-
-    public LocalDateTime getUBITimeStamp() {
-        return UBITimeStamp;
+    public void setUbiSetTime(LocalDateTime UbiSetTime) {
+        this.UbiSetTime = UbiSetTime;
     }
 
     @Override
     public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = new CompoundTag();
-        nbt.putString("UBITimeStamp", UBITimeStamp.toString());
         nbt.putInt("BankValue", BankValue);
+        nbt.putBoolean("HadUbi", HadUbi);
+        nbt.putBoolean("UbiSetTime", HadUbi);
         return nbt;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        setUBITimeStamp(LocalDateTime.parse(nbt.getString("UBITimeStamp")));
         setBankValue(nbt.getInt("BankValue"));
+        setHadUbi(nbt.getBoolean("HadUbi"));
+        setHadUbi(nbt.getBoolean("HadUbi"));
     }
 }

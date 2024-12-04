@@ -1,6 +1,7 @@
 package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
+import net.fullstackjones.bigbraincurrency.menu.BrainBankMenu;
 import net.fullstackjones.bigbraincurrency.menu.MoneyPouchContainer;
 import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.minecraft.core.registries.Registries;
@@ -23,6 +24,9 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<ShopMenu>> SHOPMENU =
             registerMenuType("shop_menu", ShopMenu::new);
+
+    public static final DeferredHolder<MenuType<?>, MenuType<BrainBankMenu>> BRAINBANKMENU =
+            registerMenuType("brainbank_menu", BrainBankMenu::new);
 
     private static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {
         return MENUS.register(name, () -> IMenuTypeExtension.create(factory));
