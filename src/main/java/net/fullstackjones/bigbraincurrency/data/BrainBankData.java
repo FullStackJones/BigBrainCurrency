@@ -14,7 +14,7 @@ public class BrainBankData implements INBTSerializable<CompoundTag> {
     protected LocalDateTime UbiSetTime;
 
     public BrainBankData(int BankValue) {
-        this(BankValue, false, LocalDateTime.now());
+        this(BankValue, true, LocalDateTime.now());
     }
 
     public BrainBankData(int BankValue, boolean HadUbi, LocalDateTime UbiSetTime) {

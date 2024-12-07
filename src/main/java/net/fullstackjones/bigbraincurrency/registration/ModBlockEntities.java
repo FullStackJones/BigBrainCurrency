@@ -2,7 +2,7 @@ package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
 import net.fullstackjones.bigbraincurrency.entities.BrainBankBlockEntity;
-import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntity;
+import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.IEventBus;
@@ -13,10 +13,10 @@ import java.util.function.Supplier;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, BigBrainCurrency.MODID);
 
-    public static final Supplier<BlockEntityType<ShopBlockEntity>> SHOP_ENTITY = BLOCK_ENTITIES.register(
+    public static final Supplier<BlockEntityType<SimpleShopBlockEntity>> SHOP_ENTITY = BLOCK_ENTITIES.register(
             "shopentity",
             () -> BlockEntityType.Builder
-                    .of(ShopBlockEntity::new, ModBlocks.SHOP_BLOCK.get())
+                    .of(SimpleShopBlockEntity::new, ModBlocks.SHOP_BLOCK.get())
                     .build(null));
 
     public static final Supplier<BlockEntityType<BrainBankBlockEntity>> BRAINBANK_ENTITY = BLOCK_ENTITIES.register(

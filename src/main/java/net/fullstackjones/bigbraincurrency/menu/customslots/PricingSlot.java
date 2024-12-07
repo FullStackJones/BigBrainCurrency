@@ -8,7 +8,7 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 public class PricingSlot extends SlotItemHandler {
     private final ItemStack currencyType;
 
-    private static final int MAX_STACK = 99;
+    private static final int MAX_STACK = 64;
 
     public PricingSlot(IItemHandler itemHandler, int index, int xPosition, int yPosition, ItemStack currencyType) {
         super(itemHandler, index, xPosition, yPosition);

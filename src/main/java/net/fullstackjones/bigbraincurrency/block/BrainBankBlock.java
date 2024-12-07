@@ -1,8 +1,6 @@
 package net.fullstackjones.bigbraincurrency.block;
 
-import net.fullstackjones.bigbraincurrency.data.BrainBankData;
 import net.fullstackjones.bigbraincurrency.entities.BrainBankBlockEntity;
-import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.registration.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -34,6 +33,7 @@ public class BrainBankBlock extends Block implements EntityBlock {
 
     public BrainBankBlock(Properties props) {
         super(props);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     @SuppressWarnings("unchecked") // Due to generics, an unchecked cast is necessary here.
@@ -63,6 +63,11 @@ public class BrainBankBlock extends Block implements EntityBlock {
     }
 
     @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction direction = state.getValue(FACING);
         switch (direction) {
@@ -81,15 +86,7 @@ public class BrainBankBlock extends Block implements EntityBlock {
 
     private VoxelShape makeShape(){
         VoxelShape shape = Shapes.empty();
-        shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 0.0625, 1), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0, 0.0625, 0, 1, 0.125, 0.0625), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0, 0.0625, 0.9375, 1, 0.125, 1), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.125, 0.0625, -0.0625, 1, 0.125, 0), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(-0.8125, 0.0625, -0.0625, 0.0625, 0.125, 0), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.125, 0.25, 0.1875, 0.4375, 0.6875, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.375, 0.1875, 0.625, 0.625, 0.25, 0.75), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.5625, 0.25, 0.1875, 0.875, 0.6875, 0.8125), BooleanOp.OR);
-        shape = Shapes.join(shape, Shapes.box(0.4375, 0.25, 0.25, 0.5625, 0.625, 0.75), BooleanOp.OR);
+        shape = Shapes.join(shape, Shapes.box(0, 0, 0, 1, 1, 1), BooleanOp.OR);
 
         return shape;
 

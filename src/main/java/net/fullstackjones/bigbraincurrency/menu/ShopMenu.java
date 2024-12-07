@@ -1,7 +1,7 @@
 package net.fullstackjones.bigbraincurrency.menu;
 
 import net.fullstackjones.bigbraincurrency.registration.ModBlocks;
-import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntity;
+import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.menu.customslots.PricingSlot;
 import net.fullstackjones.bigbraincurrency.menu.customslots.ShopCurrecySlot;
 import net.fullstackjones.bigbraincurrency.registration.ModMenus;
@@ -29,7 +29,7 @@ public class ShopMenu extends AbstractContainerMenu {
     protected final int slotSize = 18;
 
     protected final Inventory playerInventory;
-    public final ShopBlockEntity blockEntity;
+    public final SimpleShopBlockEntity blockEntity;
     private final Level level;
 
     public ShopMenu(int containerId, Inventory inventory, RegistryFriendlyByteBuf extraData) {
@@ -37,8 +37,8 @@ public class ShopMenu extends AbstractContainerMenu {
     }
 
     public ShopMenu(int containerId, Inventory inventory, BlockEntity shop) {
-        super(ModMenus.SHOPMENU.get(), containerId);
-        this.blockEntity = ((ShopBlockEntity) shop);
+        super(ModMenus.SIMPLESHOPMENU.get(), containerId);
+        this.blockEntity = ((SimpleShopBlockEntity) shop);
         this.playerInventory = inventory;
         this.level = inventory.player.level();
         addShopSaleSlots();
@@ -105,7 +105,7 @@ public class ShopMenu extends AbstractContainerMenu {
             stack.grow(1);
             if(stack.getCount() <= 8) {
                 blockEntity.shopItems.setStackInSlot(slotIndex, stack);
-            } else if (stack.getCount() < 100 && slotIndex == 32) {
+            } else if (stack.getCount() < 64 && slotIndex == 32) {
                 blockEntity.shopItems.setStackInSlot(slotIndex, stack);
             }
         } else if (button == 1) { // Right click

@@ -32,9 +32,6 @@ public class BrainBankScreen extends AbstractContainerScreen<BrainBankMenu> {
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         this.renderTooltip(guiGraphics, mouseX, mouseY);
-        if(this.menu.blockEntity.getData().getHadUbi()){
-            this.renderCountdownTimer(guiGraphics);
-        }
     }
 
     @Override
@@ -45,6 +42,9 @@ public class BrainBankScreen extends AbstractContainerScreen<BrainBankMenu> {
         this.titleLabelX = 62;
 
         guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY,  0xFFFFFF, false);
+        if(this.menu.blockEntity.getData().getHadUbi()){
+            this.renderCountdownTimer(guiGraphics);
+        }
     }
 
     private void renderCountdownTimer(GuiGraphics guiGraphics) {
@@ -59,6 +59,6 @@ public class BrainBankScreen extends AbstractContainerScreen<BrainBankMenu> {
         long seconds = duration.toSeconds() % 60;
 
         String timerText = String.format("%02d : %02d : %02d", hours, minutes, seconds);
-        guiGraphics.drawString(this.font, timerText, this.titleLabelX + 124, this.titleLabelY + 35, 0xFFFFFFFF, false);
+        guiGraphics.drawString(this.font, timerText, this.titleLabelX -1, this.titleLabelY + 45, 0xFFFFFFFF, false);
     }
 }

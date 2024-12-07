@@ -12,16 +12,16 @@ public class ModItems {
 
     public static final DeferredItem<Item> COPPERCOIN = ITEMS.register(
             "coppercoin",
-            () -> new Item(new Item.Properties().stacksTo(99)));
+            () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> SILVERCOIN = ITEMS.register(
             "silvercoin",
-            () -> new Item(new Item.Properties().stacksTo(99)));
+            () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> GOLDCOIN = ITEMS.register(
             "goldcoin",
-            () -> new Item(new Item.Properties().stacksTo(99)));
+            () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> PINKCOIN = ITEMS.register(
             "pinkcoin",
-            () -> new Item(new Item.Properties().stacksTo(99)));
+            () -> new Item(new Item.Properties()));
     public static final DeferredItem<Item> MONEYPOUCH = ITEMS.register(
             "moneypouch",
             () -> new MoneyPouchItem(new Item.Properties()

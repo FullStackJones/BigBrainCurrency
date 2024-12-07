@@ -1,8 +1,8 @@
 package net.fullstackjones.bigbraincurrency.block;
 
 import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
-import net.fullstackjones.bigbraincurrency.Utills.ModTags;
-import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntity;
+import net.fullstackjones.bigbraincurrency.data.BaseShopData;
+import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.data.BankDetails;
 import net.fullstackjones.bigbraincurrency.registration.ModItems;
 import net.minecraft.core.BlockPos;
@@ -34,10 +34,10 @@ import org.jetbrains.annotations.Nullable;
 
 import static net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes.BANKDETAILS;
 
-public class ShopBlock extends Block implements EntityBlock {
+public class SimpleShopBlock extends Block implements EntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-    public ShopBlock(Properties props) {
+    public SimpleShopBlock(Properties props) {
         super(props);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
@@ -47,8 +47,11 @@ public class ShopBlock extends Block implements EntityBlock {
         super.setPlacedBy(level, pos, state, placer, stack);
         if (placer instanceof Player) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ShopBlockEntity shopBlockEntity) {
-                shopBlockEntity.setOwnerUUID(placer.getUUID());
+            if (blockEntity instanceof SimpleShopBlockEntity simpleShopBlockEntity) {
+                simpleShopBlockEntity.setOwnerUUID(placer.getUUID());
+                BaseShopData data = simpleShopBlockEntity.data;
+                data.setOwnerId(placer.getUUID());
+                simpleShopBlockEntity.setData(data);
             }
         }
     }
@@ -56,24 +59,18 @@ public class ShopBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide) {
-            if (level.getBlockEntity(pos) instanceof ShopBlockEntity shop) {
+            if (level.getBlockEntity(pos) instanceof SimpleShopBlockEntity shop) {
                 if (shop.getOwnerUUID().equals(player.getUUID()) || player.isCreative()) {
                     ((ServerPlayer) player).openMenu(new SimpleMenuProvider(shop, Component.literal("shop")), pos);
                 }
                 else
                 {
-                    if(player.getInventory().contains(ModTags.Items.CURRENCY_ITEMS) || player.getInventory().contains(ModItems.MONEYPOUCH.toStack())){
+                    if(player.getInventory().contains(ModItems.MONEYPOUCH.toStack())){
 
                         int playerBalance = 0;
                         BankDetails details = player.getData(BANKDETAILS);
-                        for (ItemStack itemStack : player.getInventory().items) {
-                            if (itemStack.is(ModItems.MONEYPOUCH)){
-                                playerBalance += CurrencyUtil.calculateTotalValue(details.getCopperCoins(), details.getSilverCoins(), details.getGoldCoins(), details.getPinkCoins());
-                            }
-                            else{
-                                playerBalance += CurrencyUtil.getStackValue(itemStack);
-                            }
-                        }
+                        playerBalance += CurrencyUtil.calculateTotalValue(details.getCopperCoins(), details.getSilverCoins(), details.getGoldCoins(), details.getPinkCoins());
+
                         int shopPrice = shop.GetShopPrice();
                         if(playerBalance < shopPrice){
                             player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.insufficientFunds"));
@@ -106,7 +103,7 @@ public class ShopBlock extends Block implements EntityBlock {
     //todo: refactor this method to be more readable
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof ShopBlockEntity shop) {
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof SimpleShopBlockEntity shop) {
             if (shop.getOwnerUUID().equals(player.getUUID())) {
                 if(stack.getItem().equals(ModItems.MONEYPOUCH.asItem())){
                     if(!shop.IsThereProfit()){
@@ -179,7 +176,7 @@ public class ShopBlock extends Block implements EntityBlock {
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
     }
 
-    private void MoveItemFromShopToPlayer(Player player, ShopBlockEntity shop) {
+    private void MoveItemFromShopToPlayer(Player player, SimpleShopBlockEntity shop) {
         ItemStack referenceStack = shop.shopItems.getStackInSlot(31);
         ItemStack addToPlayer;
         int remaining = referenceStack.getCount();
@@ -198,7 +195,7 @@ public class ShopBlock extends Block implements EntityBlock {
         }
     }
 
-    private void InsertStackIntoStock(ItemStack stack, Player player, InteractionHand hand, ShopBlockEntity shop) {
+    private void InsertStackIntoStock(ItemStack stack, Player player, InteractionHand hand, SimpleShopBlockEntity shop) {
         for (int i = 0; i < 27; i++) {
             ItemStack slotStack = shop.shopItems.getStackInSlot(i);
             if (slotStack.isEmpty() || (slotStack.getItem().equals(stack.getItem()) && slotStack.getCount() < slotStack.getMaxStackSize())) {
@@ -266,14 +263,14 @@ public class ShopBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new ShopBlockEntity(pos, state);
+        return new SimpleShopBlockEntity(pos, state);
     }
 
     @Override
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof ShopBlockEntity shopBlockEntity) {
-            if(player.isCreative() || shopBlockEntity.getOwnerUUID().equals(player.getUUID())){
+        if (blockEntity instanceof SimpleShopBlockEntity simpleShopBlockEntity) {
+            if(player.isCreative() || simpleShopBlockEntity.getOwnerUUID().equals(player.getUUID())){
                 return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
             }
         }
@@ -285,9 +282,9 @@ public class ShopBlock extends Block implements EntityBlock {
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof ShopBlockEntity shopBlockEntity) {
+            if (blockEntity instanceof SimpleShopBlockEntity simpleShopBlockEntity) {
                 for (int i = 0; i < 32; i++) {
-                    ItemStack stack = shopBlockEntity.shopItems.getStackInSlot(i);
+                    ItemStack stack = simpleShopBlockEntity.shopItems.getStackInSlot(i);
                     if (!stack.isEmpty()) {
                         Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), stack);
                     }

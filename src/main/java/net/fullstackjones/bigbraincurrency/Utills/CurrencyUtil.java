@@ -8,7 +8,7 @@ public class CurrencyUtil {
     private static final Integer SILVER_VALUE = 9;
     private static final Integer GOLD_VALUE = 81;
     private static final Integer PINK_VALUE = 729;
-    private static final Integer MAX_VALUE = 99 + (SILVER_VALUE * 99) + (GOLD_VALUE * 99) + (PINK_VALUE * 99);
+    private static final Integer MAX_VALUE = 64 + (SILVER_VALUE * 64) + (GOLD_VALUE * 64) + (PINK_VALUE * 64);
 
     public static int calculateTotalValue(int copperCoin, int silverCoin, int goldCoin, int pinkCoin) {
         int silverValue = silverCoin * SILVER_VALUE;
@@ -37,13 +37,13 @@ public class CurrencyUtil {
     }
 
     public static ItemStack[] convertValueToCoins(int value) {
-        int pink = Math.min(value / PINK_VALUE, 99);
+        int pink = Math.min(value / PINK_VALUE, 64);
         value = value - pink * PINK_VALUE;
 
-        int gold = Math.min(value / GOLD_VALUE, 99);
+        int gold = Math.min(value / GOLD_VALUE, 64);
         value = value - gold * GOLD_VALUE;
 
-        int silver = Math.min(value / SILVER_VALUE, 99);
+        int silver = Math.min(value / SILVER_VALUE, 64);
         value = value - silver * SILVER_VALUE;
 
         int copper = value;

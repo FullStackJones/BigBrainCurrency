@@ -5,8 +5,8 @@
   "item.bigbraincurrency.pinkcoin": "Brain Coin",
   "item.bigbraincurrency.moneypouch": "Money Pouch",
 
-  "block.bigbraincurrency.brainbank": "Brain Coin Bank",
-  "block.bigbraincurrency.shop": "Shop",
+  "block.bigbraincurrency.brainbank": "Brain Bank",
+  "block.bigbraincurrency.shop": "Simple shop",
 
   "creativetab.bigbraincurrency.bigbraincurrency_items": "Big Brain Currency",
   "container.bigbraincurrency.shopentity": "Shop",

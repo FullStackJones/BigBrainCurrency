@@ -1,8 +1,8 @@
 package net.fullstackjones.bigbraincurrency.menu;
 
 import net.fullstackjones.bigbraincurrency.entities.BrainBankBlockEntity;
+import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.registration.ModBlocks;
-import net.fullstackjones.bigbraincurrency.registration.ModItems;
 import net.fullstackjones.bigbraincurrency.registration.ModMenus;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -11,46 +11,46 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.Nullable;
 
-public class BrainBankMenu extends AbstractContainerMenu {
+public class SimpleShopMenu extends AbstractContainerMenu {
     protected final int playerInventoryColumns = 9;
     protected final int playerInventoryRows = 4;
 
     protected final int slotSize = 18;
 
     protected final Inventory playerInventory;
-    public final BrainBankBlockEntity blockEntity;
-    private final Level level;
-    private final Container brainBankInventory;
+    public final SimpleShopBlockEntity blockEntity;
+    public final Container shopInventory;
+    public final Level level;
 
-    public BrainBankMenu(int containerId, Inventory inventory, BlockEntity brainBank) {
-        super(ModMenus.BRAINBANKMENU.get(), containerId);
-        this.blockEntity = ((BrainBankBlockEntity) brainBank);
+    public SimpleShopMenu(int containerId, Inventory inventory, BlockEntity blockEntity) {
+        super(ModMenus.SIMPLESHOPMENU.get(), containerId);
         this.playerInventory = inventory;
+        this.blockEntity = (SimpleShopBlockEntity) blockEntity;
         this.level = inventory.player.level();
-        this.brainBankInventory = new SimpleContainer(1) {
+        this.shopInventory = new SimpleContainer(2) {
             @Override
             public void setChanged() {
-                BrainBankMenu.this.blockEntity.setData(this.getItem(0).getCount());
+
                 super.setChanged();
             }
 
             @Override
             public ItemStack removeItem(int pIndex, int pCount) {
-                BrainBankMenu.this.blockEntity.setUbi(true);
+
                 return super.removeItem(pIndex, pCount);
             }
         };
-        this.brainBankInventory.setItem(0, ModItems.COPPERCOIN.toStack(blockEntity.getData().getBankValue()));
         addPlayerInventory();
-        addBrainBankInventory();
     }
 
-    public BrainBankMenu(int containerId, Inventory inventory, RegistryFriendlyByteBuf extraData) {
+    public SimpleShopMenu(int containerId, Inventory inventory, RegistryFriendlyByteBuf extraData) {
         this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
     }
 
@@ -58,16 +58,12 @@ public class BrainBankMenu extends AbstractContainerMenu {
         for (int k = 0; k < playerInventoryRows; k++) {
             for (int l = 0; l < playerInventoryColumns; l++) {
                 if (k > 0) {
-                    this.addSlot(new Slot(playerInventory, l + k * playerInventoryColumns, 9 + l * slotSize,  k * slotSize + 92));
+                    this.addSlot(new Slot(playerInventory, l + k * playerInventoryColumns, 8 + l * slotSize,  k * slotSize + 138));
                 } else {
-                    this.addSlot(new Slot(playerInventory, l, 9 + l * slotSize, 168));
+                    this.addSlot(new Slot(playerInventory, l, 8 + l * slotSize, 214));
                 }
             }
         }
-    }
-
-    private void addBrainBankInventory(){
-        this.addSlot(new Slot(brainBankInventory, 0, 62 + slotSize,  45));
     }
 
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -111,7 +107,7 @@ public class BrainBankMenu extends AbstractContainerMenu {
     }
 
     @Override
-    public boolean stillValid(Player player) {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, ModBlocks.BRAINBANK_BLOCK.get());
+    public boolean stillValid(Player pPlayer) {
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), playerInventory.player, ModBlocks.SHOP_BLOCK.get());
     }
 }

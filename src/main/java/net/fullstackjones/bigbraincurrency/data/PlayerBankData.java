@@ -21,10 +21,6 @@ public class PlayerBankData extends SimpleContainer {
         return bankDetails;
     }
 
-    public BankDetails getMoneyPouchData() {
-        return bankDetails;
-    }
-
     @Override
     public void setChanged() {
         super.setChanged();

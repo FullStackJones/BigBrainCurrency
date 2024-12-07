@@ -15,9 +15,4 @@ public class ShopCurrecySlot  extends SlotItemHandler {
     public boolean mayPlace(ItemStack stack) {
         return stack.is(this.coinType.getItem()) ;
     }
-
-    @Override
-    public int getMaxStackSize() {
-        return 99;
-    }
 }

@@ -1,12 +1,10 @@
 package net.fullstackjones.bigbraincurrency;
 
-import net.fullstackjones.bigbraincurrency.menu.BrainBankScreen;
+import net.fullstackjones.bigbraincurrency.menu.*;
 import net.fullstackjones.bigbraincurrency.registration.*;
-import net.fullstackjones.bigbraincurrency.entities.ShopBlockEntityRenderer;
+import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntityRenderer;
 import net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes;
 import net.fullstackjones.bigbraincurrency.registration.ModMenus;
-import net.fullstackjones.bigbraincurrency.menu.MoneyPouchScreen;
-import net.fullstackjones.bigbraincurrency.menu.ShopScreen;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
@@ -79,13 +77,13 @@ public class BigBrainCurrency
 
         @SubscribeEvent
         public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerBlockEntityRenderer(ModBlockEntities.SHOP_ENTITY.get(), ShopBlockEntityRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.SHOP_ENTITY.get(), SimpleShopBlockEntityRenderer::new);
         }
 
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(MONEYPOUCHMENU.get(), MoneyPouchScreen::new);
-            event.register(SHOPMENU.get(), ShopScreen::new);
+            event.register(SIMPLESHOPMENU.get(), SimpleShopScreen::new);
             event.register(BRAINBANKMENU.get(), BrainBankScreen::new);
         }
     }
