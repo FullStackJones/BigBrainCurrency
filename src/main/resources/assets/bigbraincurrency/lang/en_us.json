@@ -21,5 +21,6 @@
   "shop.bigbraincurrency.insufficientFunds": "you dont not have sufficient funds!",
   "shop.bigbraincurrency.pouchFull": "Your money pouch is full.",
   "shop.bigbraincurrency.noProfit": "There is no profits to collect",
-  "shop.bigbraincurrency.notOwner": "You do not own this store."
+  "shop.bigbraincurrency.notOwner": "You do not own this store.",
+  "container.bigbraincurrency.shopentity.salequantity": "Sale Quantity"
 }

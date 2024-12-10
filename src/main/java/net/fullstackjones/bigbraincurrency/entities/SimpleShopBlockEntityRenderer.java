@@ -2,12 +2,14 @@ package net.fullstackjones.bigbraincurrency.entities;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
@@ -23,17 +25,19 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
     public void render(SimpleShopBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         RenderWindow(poseStack, bufferSource, packedLight, packedOverlay);
 
-        ItemStack saleItem = blockEntity.shopItems.getStackInSlot(31);
-        if(!saleItem.isEmpty()){
-            RenderSaleItem(blockEntity, poseStack, bufferSource, packedLight, packedOverlay);
-            ItemStack itemStack = blockEntity.shopItems.getStackInSlot(31);
-            float playerAngle = getAngle(blockEntity);
-            if (!itemStack.isEmpty()) {
-                RenderQuantityLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
-                RenderItemNameLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
-            }
-            RenderPriceLabel(blockEntity, poseStack, bufferSource, packedLight, packedOverlay, playerAngle);
+        Item saleItem = blockEntity.data.getStockItem();
+        int saleItemQuantity = blockEntity.data.getSaleQuantity();
+
+
+        ItemStack itemStack = new ItemStack(saleItem, saleItemQuantity);
+        RenderSaleItem(blockEntity, poseStack, bufferSource, packedLight, packedOverlay, itemStack);
+        float playerAngle = getAngle(blockEntity);
+        if (!itemStack.isEmpty()) {
+            RenderQuantityLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
+            RenderItemNameLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
         }
+        RenderPriceLabel(blockEntity, poseStack, bufferSource, packedLight, packedOverlay, playerAngle);
+
     }
 
     @Override
@@ -94,9 +98,10 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(playerAngle));
         poseStack.scale(0.01f, 0.01f, 0.01f); // Smaller text size
+        ItemStack[] coins = CurrencyUtil.convertValueToCoins(blockEntity.data.getPrice());
         int priceAmounts = 0;
-        for(var i = 32; i < 36; i++){
-            if(!blockEntity.shopItems.getStackInSlot(i).isEmpty()){
+        for (ItemStack coin : coins) {
+            if (!coin.isEmpty()) {
                 priceAmounts++;
             }
         }
@@ -111,9 +116,9 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
             xOffset -= 15;
         }
 
-        for(var i = 32; i < 36; i++){
-            if(!blockEntity.shopItems.getStackInSlot(i).isEmpty()){
-                renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, blockEntity.shopItems.getStackInSlot(i), blockEntity.shopItems.getStackInSlot(i).getCount(), xOffset);
+        for(var i = 0; i < coins.length; i++){
+            if(!coins[i].isEmpty()){
+                renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, coins[i], coins[i].getCount(), xOffset);
                 xOffset += 22;
             }
         }
@@ -135,10 +140,9 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         } else if(priceAmounts == 2){
             xOffset -= 15;
         }
-
-        for(var i = 32; i < 36; i++){
-            if(!blockEntity.shopItems.getStackInSlot(i).isEmpty()){
-                renderCoinName(poseStack, bufferSource, packedLight, packedOverlay, blockEntity.shopItems.getStackInSlot(i), blockEntity.shopItems.getStackInSlot(i).getItem().getDescription().getString(), xOffset);
+        for(var i = 0; i < coins.length; i++){
+            if(!coins[i].isEmpty()){
+                renderCoinName(poseStack, bufferSource, packedLight, packedOverlay, coins[i], coins[i].getItem().getDescription().getString(), xOffset);
                 xOffset += 22;
             }
         }
@@ -180,15 +184,14 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         return 15 + font.width(coinName) * 0.04f;
     }
 
-    private static void RenderSaleItem(SimpleShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    private static void RenderSaleItem(SimpleShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, ItemStack item) {
         poseStack.pushPose();
-        ItemStack itemStack = blockEntity.shopItems.getStackInSlot(31);
         poseStack.translate(0.5, 1.45, 0.5);
         poseStack.scale(0.75f, 0.75f, 0.75f);
         long time = System.currentTimeMillis();
         float angle = (time % 7200) / 20.0f;
         poseStack.mulPose(Axis.YP.rotationDegrees(angle));
-        Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemDisplayContext.GROUND, packedLight, packedOverlay, poseStack, bufferSource, null, 0);
+        Minecraft.getInstance().getItemRenderer().renderStatic(item, ItemDisplayContext.GROUND, packedLight, packedOverlay, poseStack, bufferSource, null, 0);
         poseStack.popPose();
     }
 

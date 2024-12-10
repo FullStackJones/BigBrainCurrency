@@ -16,6 +16,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,32 +39,64 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
         }
     };
 
-    // this will be ugly this release to allow for migration of data
-    public BaseShopData data = new BaseShopData();
-
-    public void migrateData(ItemStackHandler shopItems) {
-        data.setPrice(GetShopPrice());
-        data.setProfit(GetShopBalance());
-        data.setStockQuantity(shopItems.getStackInSlot(31).getCount());
-        data.setStockItemId(shopItems.getStackInSlot(31).getItem());
-        data.setOwnerId(owner);
-
-        setChanged();
-    }
-
     private UUID owner = null;
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        migrateData(shopItems);
-
-    }
+    // this will be ugly this release to allow for migration of data
+    public BaseShopData data = new BaseShopData();
 
     public SimpleShopBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.SHOP_ENTITY.get(), pos, state);
     }
 
+    public void setData(BaseShopData data) {
+        this.data = data;
+        updateData();
+    }
+
+    public void setOwner(UUID owner) {
+        this.data.setOwnerId(owner);
+        updateData();
+    }
+
+    public void setStockQuantity(int quantity) {
+        this.data.setStockQuantity(quantity);
+        updateData();
+    }
+
+    public void setSaleQuantity(int quantity) {
+        this.data.setSaleQuantity(quantity);
+
+        updateData();
+    }
+
+    public void setProfit(int profit) {
+        this.data.setProfit(profit);
+        updateData();
+    }
+
+    public void AddSale() {
+        this.data.setProfit(this.data.getProfit() + this.data.getPrice());
+        updateData();
+    }
+
+    public void setPrice(int price) {
+        this.data.setPrice(price);
+        updateData();
+    }
+
+    public void setItem(Item item) {
+        this.data.setStockItemId(item);
+        updateData();
+    }
+
+    private void updateData(){
+        setChanged();
+        if(!level.isClientSide()) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    // Depreciated methods start
     public UUID getOwnerUUID() {
         return owner;
     }
@@ -71,15 +104,6 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
     public void setOwnerUUID(UUID owner) {
         this.owner = owner;
         setChanged();
-    }
-
-    public void setData(BaseShopData data) {
-        this.data = data;
-        setChanged();
-    }
-
-    public BaseShopData getData() {
-        return this.data;
     }
 
     public boolean IsThereProfit(){
@@ -123,6 +147,7 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
         }
         return true;
     }
+    // Depreciated methods end
 
     @Override
     public Component getDisplayName() {
@@ -134,14 +159,33 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
         return new SimpleShopMenu(containerId, playerInventory, this);
     }
 
+    private void migrateData(ItemStackHandler shopItems) {
+        data.setPrice(GetShopPrice());
+        data.setProfit(GetShopBalance());
+
+        int countedItems = 0;
+        for(int i = 0; i < 27; i++){
+            countedItems += shopItems.getStackInSlot(i).getCount();
+        }
+
+        data.setStockQuantity(countedItems);
+        data.setStockItemId(shopItems.getStackInSlot(31).getItem());
+
+        data.setSaleQuantity(shopItems.getStackInSlot(31).getCount());
+
+        data.setOwnerId(owner);
+
+        setChanged();
+    }
+
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.@NotNull Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("shop", shopItems.serializeNBT(registries));
         if(owner != null){
-            tag.put("data", data.serializeNBT(registries));
             tag.putUUID("owner", owner);
         }
+        tag.put("data", data.serializeNBT(registries));
     }
 
     @Override
@@ -150,9 +194,14 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
         shopItems.deserializeNBT(registries, tag.getCompound("shop"));
         if (tag.hasUUID("owner")) {
             owner = tag.getUUID("owner");
-            data.deserializeNBT(registries, tag.getCompound("data"));
         } else {
             owner = null;
+        }
+        if(tag.contains("data", CompoundTag.TAG_COMPOUND)){
+            data.deserializeNBT(registries, tag.getCompound("data"));
+        }
+        if(!tag.contains("data", CompoundTag.TAG_COMPOUND)){
+            migrateData(shopItems);
         }
     }
 

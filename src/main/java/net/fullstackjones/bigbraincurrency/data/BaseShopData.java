@@ -12,6 +12,7 @@ import java.util.UUID;
 public class BaseShopData  implements INBTSerializable<CompoundTag> {
     protected int profit;
     protected int price;
+    protected int saleQuantity;
     protected int stockQuantity;
     protected int stockItemId;
     protected @Nullable UUID ownerId;
@@ -28,11 +29,15 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
         return stockQuantity;
     }
 
+    public int getSaleQuantity() {
+        return saleQuantity;
+    }
+
     public Item getStockItem() {
         return Item.byId(stockItemId);
     }
 
-    public UUID getOwnerId() {
+    public @Nullable UUID getOwnerId() {
         return ownerId;
     }
 
@@ -40,7 +45,7 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
         this.price = price;
     }
 
-    public void setOwnerId(UUID ownerId) {
+    public void setOwnerId(@Nullable UUID ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -50,6 +55,10 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
 
     public void setStockQuantity(int stockQuantity) {
         this.stockQuantity = stockQuantity;
+    }
+
+    public void setSaleQuantity(int saleQuantity) {
+        this.saleQuantity = saleQuantity;
     }
 
     public void setStockItemId(Item item) {
@@ -63,7 +72,9 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
         tag.putInt("Price", price);
         tag.putInt("StockQuantity", stockQuantity);
         tag.putInt("StockItemId", stockItemId);
-        tag.putUUID("OwnerID", ownerId);
+        tag.putInt("SaleQuantity", saleQuantity);
+        if(ownerId != null)
+            tag.putUUID("OwnerID", ownerId);
         return tag;
     }
 
@@ -73,6 +84,8 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
         price = nbt.getInt("Price");
         stockQuantity = nbt.getInt("StockQuantity");
         stockItemId = nbt.getInt("StockItemId");
-        ownerId = nbt.getUUID("OwnerID");
+        saleQuantity = nbt.getInt("SaleQuantity");
+        if(nbt.contains("OwnerID"))
+            ownerId = nbt.getUUID("OwnerID");
     }
 }

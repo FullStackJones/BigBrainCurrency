@@ -5,10 +5,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class CurrencyUtil {
-    private static final Integer SILVER_VALUE = 9;
-    private static final Integer GOLD_VALUE = 81;
-    private static final Integer PINK_VALUE = 729;
-    private static final Integer MAX_VALUE = 64 + (SILVER_VALUE * 64) + (GOLD_VALUE * 64) + (PINK_VALUE * 64);
+    public static final Integer SILVER_VALUE = 9;
+    public static final Integer GOLD_VALUE = 81;
+    public static final Integer PINK_VALUE = 729;
+    public static final Integer MAX_VALUE = 64 + (SILVER_VALUE * 64) + (GOLD_VALUE * 64) + (PINK_VALUE * 64);
 
     public static int calculateTotalValue(int copperCoin, int silverCoin, int goldCoin, int pinkCoin) {
         int silverValue = silverCoin * SILVER_VALUE;
@@ -54,6 +54,31 @@ public class CurrencyUtil {
         ItemStack copperCoinStack = new ItemStack(ModItems.COPPERCOIN.get(), copper);
 
         return new ItemStack[]{copperCoinStack, silverCoinStack, goldCoinStack, pinkCoinStack};
+    }
+
+    public static ItemStack getLargestCoin(int value) {
+        if (value >= PINK_VALUE) {
+            return new ItemStack(ModItems.PINKCOIN.get(), 1);
+        } else if (value >= GOLD_VALUE) {
+            return new ItemStack(ModItems.GOLDCOIN.get(), 1);
+        } else if (value >= SILVER_VALUE) {
+            return new ItemStack(ModItems.SILVERCOIN.get(), 1);
+        } else if (value >= 1) {
+            return new ItemStack(ModItems.COPPERCOIN.get(), 1);
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public static int getCoinValue(ItemStack ItemStack) {
+        if (ItemStack.getItem() == ModItems.PINKCOIN.asItem()) {
+            return PINK_VALUE;
+        } else if (ItemStack.getItem() == ModItems.GOLDCOIN.asItem()) {
+           return GOLD_VALUE;
+        } else if (ItemStack.getItem() == ModItems.SILVERCOIN.asItem()) {
+            return SILVER_VALUE;
+        } else {
+            return 1;
+        }
     }
 
     public static Integer getMaxValue() {

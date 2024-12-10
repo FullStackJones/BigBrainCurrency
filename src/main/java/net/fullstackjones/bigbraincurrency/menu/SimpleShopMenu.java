@@ -1,5 +1,7 @@
 package net.fullstackjones.bigbraincurrency.menu;
 
+import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
+import net.fullstackjones.bigbraincurrency.data.BaseShopData;
 import net.fullstackjones.bigbraincurrency.entities.BrainBankBlockEntity;
 import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.registration.ModBlocks;
@@ -9,14 +11,11 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.Nullable;
 
 public class SimpleShopMenu extends AbstractContainerMenu {
     protected final int playerInventoryColumns = 9;
@@ -36,18 +35,53 @@ public class SimpleShopMenu extends AbstractContainerMenu {
         this.level = inventory.player.level();
         this.shopInventory = new SimpleContainer(2) {
             @Override
-            public void setChanged() {
+            public void setItem(int index, ItemStack stack) {
+                super.setItem(index, stack);
+                if(index == 0){
+                    SimpleShopMenu.this.blockEntity.setItem(stack.getItem());
+                    SimpleShopMenu.this.blockEntity.setStockQuantity(stack.getCount());
+                }
+                this.setChanged();
 
-                super.setChanged();
             }
 
             @Override
-            public ItemStack removeItem(int pIndex, int pCount) {
+            public ItemStack removeItem(int index, int count) {
+                BaseShopData data = SimpleShopMenu.this.blockEntity.data;
+                if(index == 0){
+                    int quantity = data.getStockQuantity();
+                    quantity -= count;
+                    SimpleShopMenu.this.blockEntity.setStockQuantity(quantity);
+                }
 
-                return super.removeItem(pIndex, pCount);
+                if(index == 1){
+                    int profit = data.getProfit();
+                    ItemStack coin = this.getItem(1);
+                    int coinValue = CurrencyUtil.getStackValue(coin);
+                    SimpleShopMenu.this.blockEntity.setProfit(profit - coinValue);
+                }
+                return super.removeItem(index, count);
+            }
+
+            @Override
+            public int getMaxStackSize() {
+                return 1024;
+            }
+
+            @Override
+            public int getMaxStackSize(ItemStack pStack) {
+                return 1024;
             }
         };
+
+        shopInventory.setItem(1,
+                CurrencyUtil.getLargestCoin(this.blockEntity.data.getProfit()));
+        Item stockItem = this.blockEntity.data.getStockItem();
+        shopInventory.setItem(0,
+               new ItemStack(stockItem, this.blockEntity.data.getStockQuantity()));
+
         addPlayerInventory();
+        addShopSlots();
     }
 
     public SimpleShopMenu(int containerId, Inventory inventory, RegistryFriendlyByteBuf extraData) {
@@ -64,6 +98,34 @@ public class SimpleShopMenu extends AbstractContainerMenu {
                 }
             }
         }
+    }
+
+    private void addShopSlots(){
+        // stock slot
+        this.addSlot(new Slot(shopInventory, 0, 21 + slotSize,  slotSize + 41){
+            @Override
+            public int getMaxStackSize() {
+                return 1024;
+            }
+
+            @Override
+            public int getMaxStackSize(ItemStack pStack) {
+                return 1024;
+            }
+        });
+        // profit slot
+        this.addSlot(new Slot(shopInventory, 1, 21 + slotSize,  slotSize + 84){
+            @Override
+            public boolean mayPlace(ItemStack pStack) {
+                return false;
+            }
+
+            @Override
+            public void onTake(Player pPlayer, ItemStack pStack) {
+                super.onTake(pPlayer, pStack);
+                shopInventory.setItem(1, CurrencyUtil.getLargestCoin(blockEntity.data.getProfit()));
+            }
+        });
     }
 
     private static final int HOTBAR_SLOT_COUNT = 9;
@@ -107,7 +169,126 @@ public class SimpleShopMenu extends AbstractContainerMenu {
     }
 
     @Override
+    protected boolean moveItemStackTo(ItemStack pStack, int pStartIndex, int pEndIndex, boolean pReverseDirection) {
+        boolean flag = false;
+        int i = pStartIndex;
+        if (pReverseDirection) {
+            i = pEndIndex - 1;
+        }
+
+        if (pStack.isStackable() || pEndIndex >= TE_INVENTORY_FIRST_SLOT_INDEX) {
+            while (!pStack.isEmpty() && (pReverseDirection ? i >= pStartIndex : i < pEndIndex)) {
+                Slot slot = this.slots.get(i);
+                ItemStack itemstack = slot.getItem();
+                if (!itemstack.isEmpty() && ItemStack.isSameItemSameComponents(pStack, itemstack)) {
+                    int j = itemstack.getCount() + pStack.getCount();
+                    int k = slot.getMaxStackSize(itemstack);
+                    if (j <= k) {
+                        pStack.setCount(0);
+                        itemstack.setCount(j);
+                        if(pEndIndex >= TE_INVENTORY_FIRST_SLOT_INDEX){
+                            this.blockEntity.setStockQuantity(j);
+                        }
+                        slot.setChanged();
+                        flag = true;
+                    } else if (itemstack.getCount() < k) {
+                        pStack.shrink(k - itemstack.getCount());
+                        itemstack.setCount(k);
+                        slot.setChanged();
+                        flag = true;
+                    }
+                }
+
+                if (pReverseDirection) {
+                    i--;
+                } else {
+                    i++;
+                }
+            }
+        }
+
+        if (!pStack.isEmpty()) {
+            if (pReverseDirection) {
+                i = pEndIndex - 1;
+            } else {
+                i = pStartIndex;
+            }
+
+            while (pReverseDirection ? i >= pStartIndex : i < pEndIndex) {
+                Slot slot1 = this.slots.get(i);
+                ItemStack itemstack1 = slot1.getItem();
+                if (itemstack1.isEmpty() && slot1.mayPlace(pStack)) {
+                    int l = slot1.getMaxStackSize(pStack);
+                    slot1.setByPlayer(pStack.split(Math.min(pStack.getCount(), l)));
+                    slot1.setChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (pReverseDirection) {
+                    i--;
+                } else {
+                    i++;
+                }
+            }
+        }
+
+        return flag;
+    }
+
+    @Override
     public boolean stillValid(Player pPlayer) {
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), playerInventory.player, ModBlocks.SHOP_BLOCK.get());
+    }
+
+    @Override
+    public boolean clickMenuButton(Player pPlayer, int pId) {
+        switch (pId){
+            case 0:
+                this.blockEntity.setPrice(this.blockEntity.data.getPrice() + 1);
+                break;
+            case 1:
+                if(this.blockEntity.data.getPrice() > 0){
+                    this.blockEntity.setPrice(this.blockEntity.data.getPrice() - 1);
+                }
+                break;
+            case 2:
+                this.blockEntity.setPrice(this.blockEntity.data.getPrice() + CurrencyUtil.SILVER_VALUE);
+                break;
+            case 3:
+                if(this.blockEntity.data.getPrice() > 0){
+                    if(this.blockEntity.data.getPrice() >= CurrencyUtil.SILVER_VALUE) {
+                        this.blockEntity.setPrice(this.blockEntity.data.getPrice() - CurrencyUtil.SILVER_VALUE);
+                    }
+                }
+                break;
+            case 4:
+                this.blockEntity.setPrice(this.blockEntity.data.getPrice() + CurrencyUtil.GOLD_VALUE);
+                break;
+            case 5:
+                if(this.blockEntity.data.getPrice() > 0) {
+                    if(this.blockEntity.data.getPrice() >= CurrencyUtil.GOLD_VALUE) {
+                        this.blockEntity.setPrice(this.blockEntity.data.getPrice() - CurrencyUtil.GOLD_VALUE);
+                    }
+                }
+                break;
+            case 6:
+                this.blockEntity.setPrice(this.blockEntity.data.getPrice() + CurrencyUtil.PINK_VALUE);
+                break;
+            case 7:
+                if(this.blockEntity.data.getPrice() > 0) {
+                    if(this.blockEntity.data.getPrice() >= CurrencyUtil.PINK_VALUE){
+                        this.blockEntity.setPrice(this.blockEntity.data.getPrice() - CurrencyUtil.PINK_VALUE);
+                    }
+                }
+                break;
+            case 8:
+                this.blockEntity.setSaleQuantity(this.blockEntity.data.getSaleQuantity() - 1);
+                break;
+            case 9:
+                this.blockEntity.setSaleQuantity(this.blockEntity.data.getSaleQuantity() + 1);
+                break;
+        }
+        return super.clickMenuButton(pPlayer, pId);
     }
 }
