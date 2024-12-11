@@ -30,7 +30,7 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
 
 
         ItemStack itemStack = new ItemStack(saleItem, saleItemQuantity);
-        RenderSaleItem(blockEntity, poseStack, bufferSource, packedLight, packedOverlay, itemStack);
+        RenderSaleItem(poseStack, bufferSource, packedLight, packedOverlay, itemStack);
         float playerAngle = getAngle(blockEntity);
         if (!itemStack.isEmpty()) {
             RenderQuantityLabel(poseStack, bufferSource, packedLight, playerAngle, itemStack);
@@ -116,9 +116,9 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
             xOffset -= 15;
         }
 
-        for(var i = 0; i < coins.length; i++){
-            if(!coins[i].isEmpty()){
-                renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, coins[i], coins[i].getCount(), xOffset);
+        for (ItemStack coin : coins) {
+            if (!coin.isEmpty()) {
+                renderCoinWithCount(poseStack, bufferSource, packedLight, packedOverlay, coin, coin.getCount(), xOffset);
                 xOffset += 22;
             }
         }
@@ -140,9 +140,9 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         } else if(priceAmounts == 2){
             xOffset -= 15;
         }
-        for(var i = 0; i < coins.length; i++){
-            if(!coins[i].isEmpty()){
-                renderCoinName(poseStack, bufferSource, packedLight, packedOverlay, coins[i], coins[i].getItem().getDescription().getString(), xOffset);
+        for (ItemStack coin : coins) {
+            if (!coin.isEmpty()) {
+                renderCoinName(poseStack, bufferSource, packedLight, coin.getItem().getDescription().getString(), xOffset);
                 xOffset += 22;
             }
         }
@@ -150,7 +150,7 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         poseStack.popPose();
     }
 
-    private static float renderCoinWithCount(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, ItemStack coinStack, int count, float xOffset) {
+    private static void renderCoinWithCount(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, ItemStack coinStack, int count, float xOffset) {
         poseStack.pushPose();
         poseStack.translate(xOffset, 0, 0);
         poseStack.scale(15, 15f, 15f);
@@ -167,10 +167,10 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         poseStack.popPose();
 
         // Calculate and return the width of the coin and label
-        return 15 + font.width(countText) * 0.04f;
+        font.width(countText);
     }
 
-    private static float renderCoinName(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, ItemStack coinStack, String coinName, float xOffset) {
+    private static void renderCoinName(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, String coinName, float xOffset) {
         poseStack.pushPose();
         poseStack.translate(xOffset, 0, 0);
         poseStack.scale(0.3f, 0.3f, 0.3f);
@@ -181,10 +181,10 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         poseStack.popPose();
 
         // Calculate and return the width of the coin and label
-        return 15 + font.width(coinName) * 0.04f;
+        font.width(coinName);
     }
 
-    private static void RenderSaleItem(SimpleShopBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, ItemStack item) {
+    private static void RenderSaleItem(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay, ItemStack item) {
         poseStack.pushPose();
         poseStack.translate(0.5, 1.45, 0.5);
         poseStack.scale(0.75f, 0.75f, 0.75f);

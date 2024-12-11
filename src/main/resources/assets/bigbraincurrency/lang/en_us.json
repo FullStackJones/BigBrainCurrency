@@ -22,5 +22,7 @@
   "shop.bigbraincurrency.pouchFull": "Your money pouch is full.",
   "shop.bigbraincurrency.noProfit": "There is no profits to collect",
   "shop.bigbraincurrency.notOwner": "You do not own this store.",
-  "container.bigbraincurrency.shopentity.salequantity": "Sale Quantity"
+  "container.bigbraincurrency.shopentity.salequantity": "Sale Quantity",
+
+  "curios.identifier.moneypouch": "Money Pouch"
 }

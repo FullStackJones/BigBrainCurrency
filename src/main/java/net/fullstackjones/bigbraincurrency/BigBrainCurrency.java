@@ -1,10 +1,14 @@
 package net.fullstackjones.bigbraincurrency;
 
+import net.fullstackjones.bigbraincurrency.item.MoneyPouchItem;
 import net.fullstackjones.bigbraincurrency.menu.*;
 import net.fullstackjones.bigbraincurrency.registration.*;
 import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntityRenderer;
 import net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes;
 import net.fullstackjones.bigbraincurrency.registration.ModMenus;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
@@ -22,6 +26,9 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import top.theillusivec4.curios.api.CuriosCapability;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import static net.fullstackjones.bigbraincurrency.registration.ModMenus.*;
 
@@ -50,6 +57,7 @@ public class BigBrainCurrency
         ModBlocks.register(modEventBus);
         ModMenus.register(modEventBus);
         ModLootModifiers.register(modEventBus);
+        modEventBus.addListener(MoneyPouchItem::registerCapabilities);
 
     }
 
