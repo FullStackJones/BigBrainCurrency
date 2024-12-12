@@ -45,7 +45,7 @@ public class BrainBankBlockEntity extends BlockEntity implements MenuProvider {
 
     public void setUbi(boolean ubi) {
         data.setHadUbi(ubi);
-        data.setUbiSetTime(LocalDateTime.now());
+        data.setUbiSetTime(LocalDateTime.now().plusDays(1).withHour(12).withMinute(0).withSecond(0));
         setChanged();
         if(!level.isClientSide()) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
@@ -82,19 +82,5 @@ public class BrainBankBlockEntity extends BlockEntity implements MenuProvider {
     @Override
     public @Nullable Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    public static <T extends BlockEntity> void tick(Level level, BlockPos blockPos, BlockState blockState, T t) {
-        if (t instanceof BrainBankBlockEntity blockEntity) {
-            if (LocalDateTime.now().isAfter(LocalDateTime.now().withHour(12).withMinute(0).withSecond(0).withNano(0))
-                    && blockEntity.data.getBankValue() == 0 && !blockEntity.data.getHadUbi()) {
-                blockEntity.data.setBankValue(9);
-                blockEntity.data.setUbiSetTime(LocalDateTime.now().withHour(12).withMinute(0).withSecond(0).withNano(0));
-            }
-            if (LocalDateTime.now().isAfter(blockEntity.data.getUbiSetTime().plusDays(1)) && blockEntity.data.getHadUbi()) {
-                blockEntity.data.setHadUbi(false);
-                blockEntity.data.setUbiSetTime(LocalDateTime.now().withHour(12).withMinute(0).withSecond(0).withNano(0));
-            }
-        }
     }
 }

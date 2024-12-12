@@ -283,7 +283,9 @@ public class SimpleShopMenu extends AbstractContainerMenu {
                 }
                 break;
             case 8:
-                this.blockEntity.setSaleQuantity(this.blockEntity.data.getSaleQuantity() - 1);
+                if(this.blockEntity.data.getSaleQuantity() > 0) {
+                    this.blockEntity.setSaleQuantity(this.blockEntity.data.getSaleQuantity() - 1);
+                }
                 break;
             case 9:
                 this.blockEntity.setSaleQuantity(this.blockEntity.data.getSaleQuantity() + 1);

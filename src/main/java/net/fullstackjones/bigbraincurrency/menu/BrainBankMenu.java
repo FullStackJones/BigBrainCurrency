@@ -16,6 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.time.LocalDateTime;
+
 public class BrainBankMenu extends AbstractContainerMenu {
     protected final int playerInventoryColumns = 9;
     protected final int playerInventoryRows = 4;
@@ -34,17 +36,30 @@ public class BrainBankMenu extends AbstractContainerMenu {
         this.level = inventory.player.level();
         this.brainBankInventory = new SimpleContainer(1) {
             @Override
-            public void setChanged() {
-                BrainBankMenu.this.blockEntity.setData(this.getItem(0).getCount());
-                super.setChanged();
-            }
-
-            @Override
             public ItemStack removeItem(int pIndex, int pCount) {
+                BrainBankMenu.this.blockEntity.setData(BrainBankMenu.this.blockEntity.getData().getBankValue() - this.getItem(0).getCount());
                 BrainBankMenu.this.blockEntity.setUbi(true);
                 return super.removeItem(pIndex, pCount);
             }
+
+            @Override
+            public void setItem(int index, ItemStack stack) {
+                super.setItem(index, stack);
+            }
+
+            @Override
+            public boolean canPlaceItem(int slot, ItemStack stack) {
+                return false;
+            }
         };
+
+        if(blockEntity.getData().getBankValue() <= 0
+                && blockEntity.getData().getHadUbi()
+                && blockEntity.getData().getUbiSetTime().isBefore(LocalDateTime.now())) {
+            blockEntity.setData(3);
+            blockEntity.setUbi(false);
+        }
+
         this.brainBankInventory.setItem(0, ModItems.COPPERCOIN.toStack(blockEntity.getData().getBankValue()));
         addPlayerInventory();
         addBrainBankInventory();
@@ -67,7 +82,12 @@ public class BrainBankMenu extends AbstractContainerMenu {
     }
 
     private void addBrainBankInventory(){
-        this.addSlot(new Slot(brainBankInventory, 0, 62 + slotSize,  45));
+        this.addSlot(new Slot(brainBankInventory, 0, 62 + slotSize,  45){
+            @Override
+            public boolean mayPlace(ItemStack stack) {
+                return false;
+            }
+        });
     }
 
     private static final int HOTBAR_SLOT_COUNT = 9;

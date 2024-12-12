@@ -36,12 +36,6 @@ public class BrainBankBlock extends Block implements EntityBlock {
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
-    @SuppressWarnings("unchecked") // Due to generics, an unchecked cast is necessary here.
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        return type == ModBlockEntities.BRAINBANK_ENTITY.get() ? (BlockEntityTicker<T>) BrainBankBlockEntity::tick : null;
-    }
-
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (level.getBlockEntity(pos) instanceof BrainBankBlockEntity brainBank) {
