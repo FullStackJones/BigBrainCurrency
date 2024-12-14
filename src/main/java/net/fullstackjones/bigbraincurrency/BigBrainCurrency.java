@@ -51,6 +51,7 @@ public class BigBrainCurrency
         NeoForge.EVENT_BUS.register(this);
 
         ModCreativeModeTabs.register(modEventBus);
+        ModDataComponents.register(modEventBus);
         ModAttachmentTypes.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);

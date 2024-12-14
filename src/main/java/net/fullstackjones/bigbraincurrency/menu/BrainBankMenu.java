@@ -37,7 +37,7 @@ public class BrainBankMenu extends AbstractContainerMenu {
         this.brainBankInventory = new SimpleContainer(1) {
             @Override
             public ItemStack removeItem(int pIndex, int pCount) {
-                BrainBankMenu.this.blockEntity.setData(BrainBankMenu.this.blockEntity.getData().getBankValue() - this.getItem(0).getCount());
+                BrainBankMenu.this.blockEntity.setBankValue(BrainBankMenu.this.blockEntity.getData().getBankValue() - this.getItem(0).getCount());
                 BrainBankMenu.this.blockEntity.setUbi(true);
                 return super.removeItem(pIndex, pCount);
             }
@@ -56,7 +56,7 @@ public class BrainBankMenu extends AbstractContainerMenu {
         if(blockEntity.getData().getBankValue() <= 0
                 && blockEntity.getData().getHadUbi()
                 && blockEntity.getData().getUbiSetTime().isBefore(LocalDateTime.now())) {
-            blockEntity.setData(3);
+            blockEntity.setBankValue(3);
             blockEntity.setUbi(false);
         }
 

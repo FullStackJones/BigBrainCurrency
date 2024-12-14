@@ -2,7 +2,6 @@ package net.fullstackjones.bigbraincurrency.entities;
 
 import net.fullstackjones.bigbraincurrency.data.BrainBankData;
 import net.fullstackjones.bigbraincurrency.menu.BrainBankMenu;
-import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.fullstackjones.bigbraincurrency.registration.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -15,7 +14,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +33,7 @@ public class BrainBankBlockEntity extends BlockEntity implements MenuProvider {
         return data;
     }
 
-    public void setData(int value) {
+    public void setBankValue(int value) {
         data.setBankValue(value);
         setChanged();
         if(!level.isClientSide()) {
@@ -46,6 +44,16 @@ public class BrainBankBlockEntity extends BlockEntity implements MenuProvider {
     public void setUbi(boolean ubi) {
         data.setHadUbi(ubi);
         data.setUbiSetTime(LocalDateTime.now().plusDays(1).withHour(12).withMinute(0).withSecond(0));
+        setChanged();
+        if(!level.isClientSide()) {
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
+        }
+    }
+
+    public void setData(BrainBankData data) {
+        this.data.setBankValue(data.getBankValue());
+        this.data.setHadUbi(data.getHadUbi());
+        this.data.setUbiSetTime(data.getUbiSetTime());
         setChanged();
         if(!level.isClientSide()) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);

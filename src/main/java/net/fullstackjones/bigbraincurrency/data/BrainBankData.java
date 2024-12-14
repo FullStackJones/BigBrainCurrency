@@ -7,6 +7,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class BrainBankData implements INBTSerializable<CompoundTag> {
     protected int BankValue;
@@ -61,5 +62,22 @@ public class BrainBankData implements INBTSerializable<CompoundTag> {
         setBankValue(nbt.getInt("BankValue"));
         setHadUbi(nbt.getBoolean("HadUbi"));
         setHadUbi(nbt.getBoolean("HadUbi"));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.getBankValue(), this.getUbiSetTime(), this.getHadUbi());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else {
+            return obj instanceof BrainBankData ex
+                    && this.getHadUbi() == ex.getHadUbi()
+                    && this.getBankValue() == ex.getBankValue()
+                    && this.getUbiSetTime() == ex.getUbiSetTime();
+        }
     }
 }
