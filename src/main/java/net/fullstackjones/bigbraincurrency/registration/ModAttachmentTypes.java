@@ -1,6 +1,8 @@
-package net.fullstackjones.bigbraincurrency.data;
+package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
+import net.fullstackjones.bigbraincurrency.data.BankDetails;
+import net.fullstackjones.bigbraincurrency.data.BankDetailsCodec;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;

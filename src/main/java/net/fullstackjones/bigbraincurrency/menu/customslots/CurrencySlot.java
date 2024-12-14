@@ -13,15 +13,6 @@ public class CurrencySlot extends Slot {
     }
 
     @Override
-    public int getMaxStackSize() {
-        return 99;
-    }
-    @Override
-    public int getMaxStackSize(ItemStack stack) {
-        return 99;
-    }
-
-    @Override
     public boolean mayPlace(ItemStack stack) {
         return stack.is(this.coinType.getItem()) ;
     }

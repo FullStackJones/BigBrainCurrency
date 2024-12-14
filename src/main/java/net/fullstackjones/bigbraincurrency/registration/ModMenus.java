@@ -1,6 +1,10 @@
-package net.fullstackjones.bigbraincurrency.menu;
+package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
+import net.fullstackjones.bigbraincurrency.menu.BrainBankMenu;
+import net.fullstackjones.bigbraincurrency.menu.MoneyPouchContainer;
+import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
+import net.fullstackjones.bigbraincurrency.menu.SimpleShopMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,14 +17,17 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
 
-public class ModContainers {
+public class ModMenus {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, BigBrainCurrency.MODID);
 
     public static final Supplier<MenuType<MoneyPouchContainer>> MONEYPOUCHMENU =
             MENUS.register("moneypouch_menu", () -> new MenuType<>(MoneyPouchContainer::new, FeatureFlags.DEFAULT_FLAGS));
 
-    public static final DeferredHolder<MenuType<?>, MenuType<ShopMenu>> SHOPMENU =
-            registerMenuType("shop_menu", ShopMenu::new);
+    public static final DeferredHolder<MenuType<?>, MenuType<SimpleShopMenu>> SIMPLESHOPMENU =
+            registerMenuType("simpleshop_menu", SimpleShopMenu::new);
+
+    public static final DeferredHolder<MenuType<?>, MenuType<BrainBankMenu>> BRAINBANKMENU =
+            registerMenuType("brainbank_menu", BrainBankMenu::new);
 
     private static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(String name, IContainerFactory<T> factory) {
         return MENUS.register(name, () -> IMenuTypeExtension.create(factory));

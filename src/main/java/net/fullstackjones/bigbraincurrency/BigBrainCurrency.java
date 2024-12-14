@@ -1,14 +1,14 @@
 package net.fullstackjones.bigbraincurrency;
 
-import net.fullstackjones.bigbraincurrency.block.ModBlockEntities;
-import net.fullstackjones.bigbraincurrency.block.ModBlocks;
-import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntityRenderer;
-import net.fullstackjones.bigbraincurrency.data.ModAttachmentTypes;
-import net.fullstackjones.bigbraincurrency.item.ModItems;
-import net.fullstackjones.bigbraincurrency.loottables.ModLootModifiers;
-import net.fullstackjones.bigbraincurrency.menu.ModContainers;
-import net.fullstackjones.bigbraincurrency.menu.MoneyPouchScreen;
-import net.fullstackjones.bigbraincurrency.menu.ShopScreen;
+import net.fullstackjones.bigbraincurrency.item.MoneyPouchItem;
+import net.fullstackjones.bigbraincurrency.menu.*;
+import net.fullstackjones.bigbraincurrency.registration.*;
+import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntityRenderer;
+import net.fullstackjones.bigbraincurrency.registration.ModAttachmentTypes;
+import net.fullstackjones.bigbraincurrency.registration.ModMenus;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.slf4j.Logger;
@@ -26,9 +26,11 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import top.theillusivec4.curios.api.CuriosCapability;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 
-import static net.fullstackjones.bigbraincurrency.menu.ModContainers.MONEYPOUCHMENU;
-import static net.fullstackjones.bigbraincurrency.menu.ModContainers.SHOPMENU;
+import static net.fullstackjones.bigbraincurrency.registration.ModMenus.*;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(BigBrainCurrency.MODID)
@@ -49,12 +51,14 @@ public class BigBrainCurrency
         NeoForge.EVENT_BUS.register(this);
 
         ModCreativeModeTabs.register(modEventBus);
+        ModDataComponents.register(modEventBus);
         ModAttachmentTypes.register(modEventBus);
         ModItems.register(modEventBus);
         ModBlockEntities.register(modEventBus);
         ModBlocks.register(modEventBus);
-        ModContainers.register(modEventBus);
+        ModMenus.register(modEventBus);
         ModLootModifiers.register(modEventBus);
+        modEventBus.addListener(MoneyPouchItem::registerCapabilities);
 
     }
 
@@ -82,13 +86,14 @@ public class BigBrainCurrency
 
         @SubscribeEvent
         public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
-            event.registerBlockEntityRenderer(ModBlockEntities.SHOPENTITY.get(), ShopBlockEntityRenderer::new);
+            event.registerBlockEntityRenderer(ModBlockEntities.SHOP_ENTITY.get(), SimpleShopBlockEntityRenderer::new);
         }
 
         @SubscribeEvent
         public static void registerScreens(RegisterMenuScreensEvent event) {
             event.register(MONEYPOUCHMENU.get(), MoneyPouchScreen::new);
-            event.register(SHOPMENU.get(), ShopScreen::new);
+            event.register(SIMPLESHOPMENU.get(), SimpleShopScreen::new);
+            event.register(BRAINBANKMENU.get(), BrainBankScreen::new);
         }
     }
 }

@@ -1,16 +1,11 @@
-package net.fullstackjones.bigbraincurrency.block;
+package net.fullstackjones.bigbraincurrency.registration;
 
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
-import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntity;
-import net.fullstackjones.bigbraincurrency.block.entities.ShopBlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.core.Registry;
+import net.fullstackjones.bigbraincurrency.entities.BrainBankBlockEntity;
+import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -18,10 +13,16 @@ import java.util.function.Supplier;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, BigBrainCurrency.MODID);
 
-    public static final Supplier<BlockEntityType<ShopBlockEntity>> SHOPENTITY = BLOCK_ENTITIES.register(
+    public static final Supplier<BlockEntityType<SimpleShopBlockEntity>> SHOP_ENTITY = BLOCK_ENTITIES.register(
             "shopentity",
             () -> BlockEntityType.Builder
-                    .of(ShopBlockEntity::new, ModBlocks.SHOP_BLOCK.get())
+                    .of(SimpleShopBlockEntity::new, ModBlocks.SHOP_BLOCK.get())
+                    .build(null));
+
+    public static final Supplier<BlockEntityType<BrainBankBlockEntity>> BRAINBANK_ENTITY = BLOCK_ENTITIES.register(
+            "brainbankentity",
+            () -> BlockEntityType.Builder
+                    .of(BrainBankBlockEntity::new, ModBlocks.BRAINBANK_BLOCK.get())
                     .build(null));
 
     public static void register(IEventBus eventBus) {

@@ -5,12 +5,13 @@
   "item.bigbraincurrency.pinkcoin": "Brain Coin",
   "item.bigbraincurrency.moneypouch": "Money Pouch",
 
-  "block.bigbraincurrency.brainbank": "Brain Coin Bank",
-  "block.bigbraincurrency.shop": "Shop",
+  "block.bigbraincurrency.brainbank": "Brain Bank",
+  "block.bigbraincurrency.shop": "Simple shop",
 
   "creativetab.bigbraincurrency.bigbraincurrency_items": "Big Brain Currency",
   "container.bigbraincurrency.shopentity": "Shop",
   "container.bigbraincurrency.shop": "Shop",
+  "container.bigbraincurrency.brainbank": "brain bank",
   "container.bigbraincurrency.shopentity.stock": "Stock",
   "container.bigbraincurrency.shopentity.Item": "Item",
   "container.bigbraincurrency.shopentity.Price": "Price",
@@ -20,5 +21,8 @@
   "shop.bigbraincurrency.insufficientFunds": "you dont not have sufficient funds!",
   "shop.bigbraincurrency.pouchFull": "Your money pouch is full.",
   "shop.bigbraincurrency.noProfit": "There is no profits to collect",
-  "shop.bigbraincurrency.notOwner": "You do not own this store."
+  "shop.bigbraincurrency.notOwner": "You do not own this store.",
+  "container.bigbraincurrency.shopentity.salequantity": "Sale Quantity",
+
+  "curios.identifier.moneypouch": "Money Pouch"
 }

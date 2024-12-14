@@ -10,6 +10,7 @@ public class BankDetails {
     private final int silverCoins;
     private final int goldCoins;
     private final int pinkCoins;
+    private final int BankValue;
     private final LocalDateTime lastUBIPayment;
     private final String bankBalance;
 
@@ -18,6 +19,7 @@ public class BankDetails {
         this.silverCoins = silverCoins;
         this.goldCoins = goldCoins;
         this.pinkCoins = pinkCoins;
+        this.BankValue = CurrencyUtil.calculateTotalValue(copperCoins, silverCoins, goldCoins, pinkCoins);
         this.lastUBIPayment = lastUBIPayment;
         this.bankBalance = String.format("Copper Coins: %d, Silver Coins: %d, Gold Coins: %d, Pink Coins: %d",
                 copperCoins, silverCoins, goldCoins, pinkCoins);
@@ -53,6 +55,10 @@ public class BankDetails {
 
     public int getPinkCoins() {
         return pinkCoins;
+    }
+
+    public int getBankValue() {
+        return BankValue;
     }
 
     public String getBankBalance() {

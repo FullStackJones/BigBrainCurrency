@@ -1,7 +1,6 @@
 package net.fullstackjones.bigbraincurrency.loottables;
 
-import net.fullstackjones.bigbraincurrency.item.ModItems;
-import net.minecraft.core.component.DataComponents;
+import net.fullstackjones.bigbraincurrency.registration.ModItems;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
