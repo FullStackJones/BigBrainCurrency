@@ -1,11 +1,13 @@
 package net.fullstackjones.bigbraincurrency.data;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
@@ -23,7 +25,7 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
     protected int saleQuantity;
     protected int stockQuantity;
     protected int stockItemId;
-    protected ItemStack stockStackData;
+    protected ItemStack stockStackData; // <- this feels yucky id rather just store the tags
     protected @Nullable UUID ownerId;
 
     public int getPrice() {
@@ -78,7 +80,7 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
         this.stockStackData = item;
     }
 
-    public ItemStack getStockDataComponentMap() {
+    public ItemStack getStockStackData() {
         return this.stockStackData;
     }
 
@@ -93,6 +95,16 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
 
         if(ownerId != null)
             tag.putUUID("OwnerID", ownerId);
+
+
+        if(stockStackData.isEmpty())
+            return tag;
+        ListTag nbtTagList = new ListTag();
+        CompoundTag itemTag = new CompoundTag();
+        itemTag.putInt("Slot", 0);
+        nbtTagList.add(stockStackData.save(provider, itemTag));
+        tag.put("stockStackData", nbtTagList);
+
         return tag;
     }
 
@@ -106,5 +118,12 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
 
         if(nbt.contains("OwnerID"))
             ownerId = nbt.getUUID("OwnerID");
+
+        ListTag tagList = nbt.getList("stockStackData", Tag.TAG_COMPOUND);
+        NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
+        CompoundTag itemTags = tagList.getCompound(0);
+        ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(0, stack));
+        stacks.getFirst().setCount(stockQuantity);
+        stockStackData = stacks.getFirst();
     }
 }

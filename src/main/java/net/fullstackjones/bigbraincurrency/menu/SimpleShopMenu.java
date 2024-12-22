@@ -6,6 +6,8 @@ import net.fullstackjones.bigbraincurrency.entities.BrainBankBlockEntity;
 import net.fullstackjones.bigbraincurrency.entities.SimpleShopBlockEntity;
 import net.fullstackjones.bigbraincurrency.registration.ModBlocks;
 import net.fullstackjones.bigbraincurrency.registration.ModMenus;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -77,9 +79,11 @@ public class SimpleShopMenu extends AbstractContainerMenu {
 
         shopInventory.setItem(1,
                 CurrencyUtil.getLargestCoin(this.blockEntity.data.getProfit()));
-        Item stockItem = this.blockEntity.data.getStockItem();
-        shopInventory.setItem(0,
-               new ItemStack(stockItem, this.blockEntity.data.getStockQuantity()));
+
+        ItemStack stockItem = this.blockEntity.getItemStack();
+        stockItem.setCount(this.blockEntity.data.getStockQuantity());
+
+        shopInventory.setItem(0,stockItem);
 
         addPlayerInventory();
         addShopSlots();

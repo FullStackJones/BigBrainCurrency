@@ -25,11 +25,10 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
     public void render(SimpleShopBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         RenderWindow(poseStack, bufferSource, packedLight, packedOverlay);
 
-        Item saleItem = blockEntity.data.getStockItem();
         int saleItemQuantity = blockEntity.data.getSaleQuantity();
+        ItemStack itemStack = blockEntity.getItemStack();
+        itemStack.setCount(saleItemQuantity);
 
-
-        ItemStack itemStack = new ItemStack(saleItem, saleItemQuantity);
         RenderSaleItem(poseStack, bufferSource, packedLight, packedOverlay, itemStack);
         float playerAngle = getAngle(blockEntity);
         if (!itemStack.isEmpty()) {
