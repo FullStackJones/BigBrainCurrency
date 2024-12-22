@@ -86,6 +86,12 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
 
     public void setItem(Item item) {
         this.data.setStockItemId(item);
+        this.data.setStockDataComponentMap(new ItemStack(item));
+        updateData();
+    }
+
+    public void setItemData(ItemStack item) {
+        this.data.setStockDataComponentMap(item);
         updateData();
     }
 
