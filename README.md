@@ -13,6 +13,10 @@ The roadmap is a basic idea of features that are planned to be added to the mod.
 - [x] Simple shop
 - [x] Brain Bank (currency provider)
 - [ ] Specialised Shops (Armour, Weapons, Fluids, etc.)
+- [ ] Shop visitor UI
+- [ ] Buying Shop
+- [ ] Player buy limits
+- [ ] Server shops
 - [ ] Shop Analytics
 - [ ] Shop Co-Ownership
 - [ ] Upgradable Shops
