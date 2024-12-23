@@ -25,11 +25,10 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
     public void render(SimpleShopBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         RenderWindow(poseStack, bufferSource, packedLight, packedOverlay);
 
-        Item saleItem = blockEntity.data.getStockItem();
         int saleItemQuantity = blockEntity.data.getSaleQuantity();
+        ItemStack itemStack = blockEntity.getItemStack();
+        itemStack.setCount(saleItemQuantity);
 
-
-        ItemStack itemStack = new ItemStack(saleItem, saleItemQuantity);
         RenderSaleItem(poseStack, bufferSource, packedLight, packedOverlay, itemStack);
         float playerAngle = getAngle(blockEntity);
         if (!itemStack.isEmpty()) {
@@ -71,7 +70,7 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(playerAngle));
         poseStack.scale(0.01f, 0.01f, 0.01f);
-        String itemName = itemStack.getItem().getDescription().getString();
+        String itemName = itemStack.getHoverName().getString();
         Font font = Minecraft.getInstance().font;
         float textWidth = font.width(itemName) / 2.0f;
         float textHeight = font.lineHeight / 2.0f;

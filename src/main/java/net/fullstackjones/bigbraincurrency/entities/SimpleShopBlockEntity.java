@@ -7,6 +7,8 @@ import net.fullstackjones.bigbraincurrency.registration.ModBlockEntities;
 import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -89,6 +91,22 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
         updateData();
     }
 
+    public void setItemData(ItemStack item) {
+        this.data.setStockStackData(item);
+        updateData();
+    }
+
+    public ItemStack getItemStack() {
+        ItemStack items = new ItemStack(this.data.getStockItem(), 0);
+        DataComponentMap dataStack = this.data.getStockStackData().getComponents();
+        for(DataComponentType key : dataStack.keySet()){
+            var x = dataStack.get(key);
+            items.set(key, x);
+        }
+
+        return items;
+    }
+
     private void updateData(){
         setChanged();
         if(!level.isClientSide()) {
@@ -97,55 +115,12 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     // Depreciated methods start
-    public UUID getOwnerUUID() {
-        return owner;
-    }
-
-    public void setOwnerUUID(UUID owner) {
-        this.owner = owner;
-        setChanged();
-    }
-
-    public boolean IsThereProfit(){
-        return !shopItems.getStackInSlot(27).isEmpty() || !shopItems.getStackInSlot(28).isEmpty() || !shopItems.getStackInSlot(29).isEmpty() || !shopItems.getStackInSlot(30).isEmpty();
-    }
-
-    public boolean IsShopPriceSet(){
-        return !shopItems.getStackInSlot(32).isEmpty() || !shopItems.getStackInSlot(33).isEmpty() || !shopItems.getStackInSlot(34).isEmpty() || !shopItems.getStackInSlot(35).isEmpty();
-    }
-
     public int GetShopBalance(){
         return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(30).getCount(), shopItems.getStackInSlot(29).getCount(), shopItems.getStackInSlot(28).getCount(), shopItems.getStackInSlot(27).getCount());
     }
 
     public int GetShopPrice(){
         return CurrencyUtil.calculateTotalValue(shopItems.getStackInSlot(35).getCount(), shopItems.getStackInSlot(34).getCount(), shopItems.getStackInSlot(33).getCount(), shopItems.getStackInSlot(32).getCount());
-    }
-
-    public void UpdateShopProfits( ItemStack[] coins){
-        shopItems.insertItem(30, coins[0], false);
-        shopItems.insertItem(29, coins[1], false);
-        shopItems.insertItem(28, coins[2], false);
-        shopItems.insertItem(27, coins[3], false);
-    }
-
-    public void clearProfit(){
-        shopItems.setStackInSlot(27, ItemStack.EMPTY);
-        shopItems.setStackInSlot(28, ItemStack.EMPTY);
-        shopItems.setStackInSlot(29, ItemStack.EMPTY);
-        shopItems.setStackInSlot(30, ItemStack.EMPTY);
-        setChanged();
-    }
-
-    public boolean stockIsEmpty(int amount){
-        int countedItems = 0;
-        for(int i = 0; i < 27; i++){
-            countedItems += shopItems.getStackInSlot(i).getCount();
-            if(countedItems >= amount){
-                return false;
-            }
-        }
-        return true;
     }
     // Depreciated methods end
 
@@ -169,6 +144,7 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
         }
 
         data.setStockQuantity(countedItems);
+        data.setStockStackData(shopItems.getStackInSlot(31));
         data.setStockItemId(shopItems.getStackInSlot(31).getItem());
 
         data.setSaleQuantity(shopItems.getStackInSlot(31).getCount());

@@ -14,6 +14,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AirItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -50,7 +52,7 @@ public class SimpleShopBlock extends Block implements EntityBlock {
         if (placer instanceof Player) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof SimpleShopBlockEntity simpleShopBlockEntity) {
-                simpleShopBlockEntity.setOwnerUUID(placer.getUUID());
+                simpleShopBlockEntity.setOwner(placer.getUUID());
                 BaseShopData data = simpleShopBlockEntity.data;
                 data.setOwnerId(placer.getUUID());
                 simpleShopBlockEntity.setData(data);
@@ -80,7 +82,10 @@ public class SimpleShopBlock extends Block implements EntityBlock {
                         return InteractionResult.SUCCESS;
                     }
 
-                    player.addItem(new ItemStack(shop.data.getStockItem(), shop.data.getSaleQuantity()));
+                    ItemStack saleItem = shop.getItemStack();
+                    saleItem.setCount(shop.data.getSaleQuantity());
+
+                    player.addItem(saleItem);
                     shop.setStockQuantity(shop.data.getStockQuantity() - shop.data.getSaleQuantity());
 
                     shop.AddSale();
@@ -104,7 +109,7 @@ public class SimpleShopBlock extends Block implements EntityBlock {
         if (!level.isClientSide && level.getBlockEntity(pos) instanceof SimpleShopBlockEntity shop) {
             if (shop.data.getOwnerId().equals(player.getUUID())) {
                 if(stack.getItem().equals(ModItems.MONEYPOUCH.asItem())){
-                    if(!shop.IsThereProfit()){
+                    if(shop.data.getProfit() <= 0){
                         player.sendSystemMessage(Component.translatable("shop.bigbraincurrency.noProfit"));
                         return ItemInteractionResult.SUCCESS;
                     }
@@ -133,12 +138,10 @@ public class SimpleShopBlock extends Block implements EntityBlock {
 
                     return ItemInteractionResult.SUCCESS;
                 }
-                else if (stack.getItem() == shop.shopItems.getStackInSlot(31).getItem() && !shop.shopItems.getStackInSlot(31).isEmpty()) {
-                    if(stack.getItem().equals(shop.data.getStockItem())){
+                else if(stack.getItem().equals(shop.data.getStockItem()) && !shop.data.getStockItem().equals(Item.byId(0))){
                         player.setItemInHand(hand, ItemStack.EMPTY);
                         shop.setStockQuantity(shop.data.getStockQuantity() + stack.getCount());
-                    }
-                    return ItemInteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                 }
             }
         }
@@ -218,8 +221,9 @@ public class SimpleShopBlock extends Block implements EntityBlock {
         if (!state.is(newState.getBlock())) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity instanceof SimpleShopBlockEntity simpleShopBlockEntity) {
-                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(),
-                        new ItemStack(simpleShopBlockEntity.data.getStockItem(), simpleShopBlockEntity.data.getStockQuantity()));
+                ItemStack stockItem = simpleShopBlockEntity.getItemStack();
+                stockItem.setCount(simpleShopBlockEntity.data.getStockQuantity());
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(),stockItem);
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(),ModItems.COPPERCOIN.toStack(simpleShopBlockEntity.data.getProfit()));
                 level.updateNeighbourForOutputSignal(pos, this);
             }
