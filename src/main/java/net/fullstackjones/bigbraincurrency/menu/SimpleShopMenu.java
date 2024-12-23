@@ -41,11 +41,10 @@ public class SimpleShopMenu extends AbstractContainerMenu {
                 super.setItem(index, stack);
                 if(index == 0){
                     SimpleShopMenu.this.blockEntity.setItem(stack.getItem());
-                    SimpleShopMenu.this.blockEntity.setItemData(stack);
                     SimpleShopMenu.this.blockEntity.setStockQuantity(stack.getCount());
+                    SimpleShopMenu.this.blockEntity.setItemData(stack);
                 }
                 this.setChanged();
-
             }
 
             @Override

@@ -14,6 +14,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.*;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AirItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -136,7 +138,7 @@ public class SimpleShopBlock extends Block implements EntityBlock {
 
                     return ItemInteractionResult.SUCCESS;
                 }
-                else if(stack.getItem().equals(shop.data.getStockItem())){
+                else if(stack.getItem().equals(shop.data.getStockItem()) && !shop.data.getStockItem().equals(Item.byId(0))){
                         player.setItemInHand(hand, ItemStack.EMPTY);
                         shop.setStockQuantity(shop.data.getStockQuantity() + stack.getCount());
                         return ItemInteractionResult.SUCCESS;

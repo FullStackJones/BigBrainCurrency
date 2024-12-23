@@ -144,6 +144,7 @@ public class SimpleShopBlockEntity extends BlockEntity implements MenuProvider {
         }
 
         data.setStockQuantity(countedItems);
+        data.setStockStackData(shopItems.getStackInSlot(31));
         data.setStockItemId(shopItems.getStackInSlot(31).getItem());
 
         data.setSaleQuantity(shopItems.getStackInSlot(31).getCount());

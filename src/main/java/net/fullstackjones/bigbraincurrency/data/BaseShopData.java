@@ -25,7 +25,7 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
     protected int saleQuantity;
     protected int stockQuantity;
     protected int stockItemId;
-    protected ItemStack stockStackData; // <- this feels yucky id rather just store the tags
+    protected ItemStack stockStackData = ItemStack.EMPTY; // <- this feels yucky id rather just store the tags
     protected @Nullable UUID ownerId;
 
     public int getPrice() {
@@ -96,13 +96,14 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
         if(ownerId != null)
             tag.putUUID("OwnerID", ownerId);
 
-
         if(stockStackData.isEmpty())
             return tag;
+        ItemStack stack = stockStackData.copy();
+        stack.setCount(1);
         ListTag nbtTagList = new ListTag();
         CompoundTag itemTag = new CompoundTag();
         itemTag.putInt("Slot", 0);
-        nbtTagList.add(stockStackData.save(provider, itemTag));
+        nbtTagList.add(stack.save(provider, itemTag));
         tag.put("stockStackData", nbtTagList);
 
         return tag;
@@ -118,12 +119,13 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
 
         if(nbt.contains("OwnerID"))
             ownerId = nbt.getUUID("OwnerID");
-
-        ListTag tagList = nbt.getList("stockStackData", Tag.TAG_COMPOUND);
-        NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
-        CompoundTag itemTags = tagList.getCompound(0);
-        ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(0, stack));
-        stacks.getFirst().setCount(stockQuantity);
-        stockStackData = stacks.getFirst();
+        if(nbt.contains("stockStackData")){
+            ListTag tagList = nbt.getList("stockStackData", Tag.TAG_COMPOUND);
+            NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
+            CompoundTag itemTags = tagList.getCompound(0);
+            ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(0, stack));
+            stacks.getFirst().setCount(stockQuantity);
+            stockStackData = stacks.getFirst();
+        }
     }
 }

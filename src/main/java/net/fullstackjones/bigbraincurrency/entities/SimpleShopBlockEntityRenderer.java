@@ -70,7 +70,7 @@ public class SimpleShopBlockEntityRenderer implements BlockEntityRenderer<Simple
         poseStack.mulPose(Axis.XP.rotationDegrees(180));
         poseStack.mulPose(Axis.YP.rotationDegrees(playerAngle));
         poseStack.scale(0.01f, 0.01f, 0.01f);
-        String itemName = itemStack.getItem().getDescription().getString();
+        String itemName = itemStack.getHoverName().getString();
         Font font = Minecraft.getInstance().font;
         float textWidth = font.width(itemName) / 2.0f;
         float textHeight = font.lineHeight / 2.0f;
