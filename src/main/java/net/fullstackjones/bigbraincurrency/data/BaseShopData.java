@@ -2,9 +2,6 @@ package net.fullstackjones.bigbraincurrency.data;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.PatchedDataComponentMap;
-import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -14,10 +11,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
-import javax.xml.crypto.Data;
 import java.util.UUID;
-
-import static org.openjdk.nashorn.internal.objects.Global.println;
 
 public class BaseShopData  implements INBTSerializable<CompoundTag> {
     protected int profit;

@@ -4,7 +4,6 @@ import net.fullstackjones.bigbraincurrency.Utills.CurrencyUtil;
 import net.fullstackjones.bigbraincurrency.data.BaseShopData;
 import net.fullstackjones.bigbraincurrency.menu.SimpleShopMenu;
 import net.fullstackjones.bigbraincurrency.registration.ModBlockEntities;
-import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;

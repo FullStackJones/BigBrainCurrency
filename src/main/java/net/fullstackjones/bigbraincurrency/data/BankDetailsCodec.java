@@ -10,7 +10,6 @@ public class BankDetailsCodec {
             Codec.INT.fieldOf("copperCoins").forGetter(BankDetails::getCopperCoins),
             Codec.INT.fieldOf("silverCoins").forGetter(BankDetails::getSilverCoins),
             Codec.INT.fieldOf("goldCoins").forGetter(BankDetails::getGoldCoins),
-            Codec.INT.fieldOf("pinkCoins").forGetter(BankDetails::getPinkCoins),
-            Codec.STRING.xmap(LocalDateTime::parse, LocalDateTime::toString).fieldOf("lastUBIPayment").forGetter(BankDetails::getLastUpdated)
+            Codec.INT.fieldOf("pinkCoins").forGetter(BankDetails::getPinkCoins)
     ).apply(instance, BankDetails::new));
 }

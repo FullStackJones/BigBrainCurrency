@@ -24,7 +24,7 @@ public class MoneyPouchContainer extends AbstractContainerMenu {
 
 
     public MoneyPouchContainer(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory,  new PlayerBankData(4,new BankDetails(0,0,0,0, LocalDateTime.now())));
+        this(containerId, playerInventory,  new PlayerBankData(4,new BankDetails(0,0,0,0)));
     }
     
     public MoneyPouchContainer(int id, Inventory playerInventory, PlayerBankData playerBankData) {

@@ -3,7 +3,6 @@ package net.fullstackjones.bigbraincurrency.registration;
 import net.fullstackjones.bigbraincurrency.BigBrainCurrency;
 import net.fullstackjones.bigbraincurrency.menu.BrainBankMenu;
 import net.fullstackjones.bigbraincurrency.menu.MoneyPouchContainer;
-import net.fullstackjones.bigbraincurrency.menu.ShopMenu;
 import net.fullstackjones.bigbraincurrency.menu.SimpleShopMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.flag.FeatureFlags;

@@ -7,7 +7,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class BaseShopBlock extends Block implements EntityBlock {
+public class  BaseShopBlock extends Block implements EntityBlock {
     public BaseShopBlock(Properties properties) {
         super(properties);
     }
