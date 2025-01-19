@@ -39,7 +39,7 @@ public class BaseShopData  implements INBTSerializable<CompoundTag> {
     }
 
     public Item getStockItem() {
-        return Item.byId(stockItemId);
+        return stockStackData.getItem();
     }
 
     public @Nullable UUID getOwnerId() {
