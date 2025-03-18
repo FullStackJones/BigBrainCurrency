@@ -190,10 +190,10 @@ public class SimpleShopMenu extends AbstractContainerMenu {
                     if (j <= k) {
                         pStack.setCount(0);
                         itemstack.setCount(j);
+                        slot.setChanged();
                         if(pEndIndex >= TE_INVENTORY_FIRST_SLOT_INDEX){
                             this.blockEntity.setStockQuantity(j);
                         }
-                        slot.setChanged();
                         flag = true;
                     } else if (itemstack.getCount() < k) {
                         pStack.shrink(k - itemstack.getCount());
@@ -225,6 +225,9 @@ public class SimpleShopMenu extends AbstractContainerMenu {
                     int l = slot1.getMaxStackSize(pStack);
                     slot1.setByPlayer(pStack.split(Math.min(pStack.getCount(), l)));
                     slot1.setChanged();
+                    if (pEndIndex >= TE_INVENTORY_FIRST_SLOT_INDEX) {
+                        this.blockEntity.setStockQuantity(this.blockEntity.data.getStockQuantity() - l);
+                    }
                     flag = true;
                     break;
                 }
